@@ -1,0 +1,153 @@
+/*CSS Rules for Globe Josh Tait 2016 */
+.globeNavbar{
+      padding: 2% 4% 3.5% 4%;
+      background: #fff;
+      border-bottom: 1px solid #ccc;
+      color: #ccc;
+}
+.globeNavbar .col-xs-4{
+      padding: 0;
+}
+
+#globeIndexHero{
+      background: url(../img/header-bg.jpg);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: bottom;
+      padding: 5%;
+      height: 90vh;
+      color: #fff;
+}
+
+.globeIntro{
+      font-size: 8em;
+      text-transform: uppercase;
+      text-shadow: 0px 2px 2px #383838;
+      color: #fff;
+      text-align: center;
+}
+.footer{
+      padding: 2%;
+      border-top: 1px solid #666;
+      background: #666;
+}
+
+.globeLead{
+      text-shadow: 0px 2px 2px #383838;
+}
+.p-t-1{
+      padding-top: 5%;
+}
+.m-t-1{
+      margin-top: 5%;
+}
+.imgShowcase{
+      margin: 4%;
+      border: 1px solid #ccc;
+}
+
+.glbButton{
+      padding: 1.3%;
+      background: #09EF88;
+      color: #fff;
+      border-radius: 5px;
+      text-transform: uppercase;
+       transition: all 300ms ease-in-out;
+}
+.glbButton:hover{
+      color: #fff;
+      background: #00C46B;
+      transition: all 300ms ease-in-out;
+      text-decoration: none;
+}
+
+#cta-register{
+      background: url(../img/register-cta-bg.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: bottom;
+}
+.card{
+      background: #fff;
+      padding: 1% 5% 5% 5%;
+      margin: 5% 30% 5% 30%;
+}
+.card h2{
+      text-align: center;
+      padding-bottom: 5%;
+}
+
+.input-group{
+      margin: 7% 0 7% 0;
+}
+.input-group-addon{
+      background: #09EF88;
+      color: #fff;
+}
+.form-control{
+      font-size: 1.2em;
+}
+.form-control:focus{
+      border-color: #09EF88;
+}
+/*feed*/
+.sectionFeed{
+      background: #f0f0f0;
+}
+/*cards for feed section */
+/*the card itself */
+.section-card-wrapper{
+      margin: 3% 25%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+}
+.section-card-header{
+      padding: 3%;
+      background: #fefefe;
+      border-radius: 5px;
+}
+.card-profile{
+      margin: 1%;
+}
+.card-profile img{
+      margin-right: 2.5%;
+      border: 1px solid #09EF88;
+}
+.card-profile-name{
+      
+}
+.card-profile-name, .card-profile-location, .card-profile-enlarge{
+      display: inline;
+}
+.card-profile-location{
+      color: #09EF88;
+}
+
+.fab-post-wrapper{
+      position: fixed;
+      bottom: 0;
+      right: 20px;
+}
+.fab-post{
+      background: #fefefe;
+      color: #000;
+      text-align: center;
+      padding: 5%;
+}
+.fab-post p{
+      padding: 5% 2.5%;
+      font-size: 2em;
+}
+.card-bottom{
+      padding: 3% 3% 2% 3%;
+      background: #fefefe;
+}
+
+.modal-card-profile{
+      padding: 2%;
+}
+.modal-card-view-cta {
+      padding: 4%;
+}
