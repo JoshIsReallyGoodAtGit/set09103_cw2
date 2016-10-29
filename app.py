@@ -25,7 +25,22 @@ def close_db_connection(exception):
       db = getattr(g, 'db', None)
       if db is not None:
             db.close()
+            
+#check if the user is logged in, i.e. a session is running, if not, send the user to the index page 
+@app.route("/")
+def determine_user_path():
+      #session['username'] = 'Josh'
+      if 'username' in session:
+           return go_to_feed()
+      else:
+            return go_to_index()
 
+@app.route("/feed/")
+def go_to_feed():
+      return render_template('feed.html')
+
+def go_to_index():
+      return render_template('index.html')
 
 
 if __name__ == "__main__":
