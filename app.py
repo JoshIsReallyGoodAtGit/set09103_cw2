@@ -1,4 +1,4 @@
-from flask import Flask, g, session, render_template, flash, url_for
+from flask import Flask, g, session, render_template, flash, url_for, request
 import string
 import random
 
@@ -41,7 +41,16 @@ def go_to_feed():
 
 def go_to_index():
       return render_template('index.html')
-
+                              
+                                                                        #Add GET too, otherwise we wont be able to access the template!
+@app.route("/register/", methods=['GET', 'POST'])
+def register_account():
+      #if user post'd something
+      if request.method == 'POST':
+            userName = request.form['email']
+            return userName
+      else:
+            return "Get"
 
 if __name__ == "__main__":
-      app.run(host="0.0.0.0", debug=True)
+      app.run(host="0.0.0.0")
