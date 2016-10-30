@@ -1,6 +1,7 @@
 from flask import Flask, g, session, render_template, flash, url_for, request
 import string
 import random
+import sqlite3
 
 app = Flask("__name__")
 
@@ -25,6 +26,14 @@ def close_db_connection(exception):
       db = getattr(g, 'db', None)
       if db is not None:
             db.close()
+
+@app.route("/sql")
+def test_sql():
+      db = get_db()
+      sql = "SELECT * FROM GLB_Accounts"
+      for row in db.cursor().execute(sql):
+            return str(row)
+      db.close()
             
 #check if the user is logged in, i.e. a session is running, if not, send the user to the index page 
 @app.route("/")
