@@ -83,12 +83,44 @@ def start_sesh(userName):
       #redirect the user
       return determine_user_path()
 
+@app.route("/login", methods=['POST'])
+def log_in():
+      #retrieve the form
+      if request.method == 'POST':
+            userName = request.form['login-email']
+            userPassword = request.form['login-password']
+            #check that none of the entries are blank, if they are notify the user
+            if userName == "" or userPassword == "":
+                  #user didn't post anything we can use, flash them
+                  return 'empty!'
+            else:
+                  #check the user exists and that the password is correct
+                  return auth_user_login(userName, userPassword)
+      else:
+            #the user is accessing this via GET, which they probably shouldn't be able to do, so send 'em away
+            return redirect('/')
+      
+
+      
+def auth_user_login(userName, userPassword):
+      #check the user exists first
+      db = get_db()
+      sqlCheck = "SELECT 'Password' FROM GLB_Accounts WHERE Email = ?"
+      for row in db.cursor().execute(sqlCheck)
+            if db.cursor().rowcount > 0:
+                  #user doesn't exist, so flash them
+                  return render_template('index.html#modal')
+            else:
+                  #user does exist, check both passwords match
+                  return db.cursor.fetchall()
+            
+
 @app.route("/logout")
 def close_sesh():
       #check if a user is actually in a session first
       if 'userName' in session:
             session.pop('userName', None)
-             #check the user was actually logged out
+            #check the user was actually logged out
             if 'userName' in session:
                   return "Logout failed! :("
             else:
@@ -106,4 +138,4 @@ def debug_log_in():
       
             
 if __name__ == "__main__":
-      app.run(host="0.0.0.0")
+      app.run(host="0.0.0.0", debug=True)
