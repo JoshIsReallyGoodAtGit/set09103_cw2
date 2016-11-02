@@ -5,7 +5,7 @@ python checks if user is logged in
       if !logged in 
             go to index.html
       
-      THIS IS DONE
+      !!THIS IS DONE
 
 user creates account
       fills in email
@@ -19,6 +19,8 @@ user creates account
             redirect to feed/profile
       if !ok
             flash errors and user tries again
+
+      !!THIS IS ALMOST DONE - NEED TO ADD FORM VALIDATION/FLASHING, BUT FUNC. IS THERE
 
 user logs in 
       fills in email

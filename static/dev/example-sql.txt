@@ -1,0 +1,7 @@
+@app.route("/sql")
+def test_sql():
+      db = get_db()
+      sql = "SELECT * FROM GLB_Accounts"
+      for row in db.cursor().execute(sql):
+            return str(row)
+      db.close()
