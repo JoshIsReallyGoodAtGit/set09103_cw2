@@ -105,15 +105,9 @@ def log_in():
 def auth_user_login(userName, userPassword):
       #check the user exists first
       db = get_db()
-      sqlCheck = "SELECT 'Password' FROM GLB_Accounts WHERE Email = ?"
-      for row in db.cursor().execute(sqlCheck)
-            if db.cursor().rowcount > 0:
-                  #user doesn't exist, so flash them
-                  return render_template('index.html#modal')
-            else:
-                  #user does exist, check both passwords match
-                  return db.cursor.fetchall()
-            
+      sql = "SELECT 'Password' FROM GLB_Accounts WHERE 'Email' = ?"
+      for row in db.cursor().execute(sql, [userName]):
+            return row
 
 @app.route("/logout")
 def close_sesh():
@@ -134,8 +128,6 @@ def debug_log_in():
       #used to force log in until the user accounts are built
       session['userName'] = 'Josh'
       return session['userName']
-     
-      
             
 if __name__ == "__main__":
-      app.run(host="0.0.0.0", debug=True)
+      app.run(host="0.0.0.0")
