@@ -151,3 +151,65 @@
 .modal-card-view-cta {
       padding: 4%;
 }
+
+.profile-background-header{
+      padding: 3%;
+      height: 45vh;
+      background: url(../img/header-bg.jpg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+}
+
+.change-label{
+      color: #fefefe;
+      background: rgba(1,1,1, .7);
+      border-radius: 3px;
+      padding: 30%;
+      text-align: center;
+      margin: 0 20% 0 0;
+      transition: all 300ms ease-in-out;
+}
+.change-label:hover{
+      text-decoration: none;
+      color: #09EF88;
+      transition: all 300ms ease-in-out;
+}
+.profile-name{
+      text-align: center;
+      margin-top: 3%;
+}
+.profile-img{
+      margin-top: -125px;
+}
+.profile-label{
+      padding: .5%;
+      text-align: center;
+      color: #fefefe;
+      background: rgba(1,1,1, .85);
+      border-radius: 3px;
+      text-align: center;
+      transition: all 300ms ease-in-out;
+}
+.profile-label:hover{
+      text-decoration: none;
+      color: #09EF88;
+      transition: all 300ms ease-in-out;
+}
+.profile-label-cta{
+      margin-top: -3%;
+}
+.profile-heading{
+      margin: 2% 0 0 10%;
+      font-size: 1.3em;
+}
+.profile-bio-text, .img-canvas{
+      margin: 2% 10%;
+}
+.profile-img-tile{
+      width: 100%;
+}
+.row.custom-padding > [class^="col-"],
+.row.custom-padding > [class*=" col-"] {
+  padding: .25%;
+}
