@@ -2,6 +2,7 @@ from flask import Flask, g, session, render_template, flash, url_for, request, r
 import string
 import random
 import sqlite3
+from pprint import pprint
 
 app = Flask("__name__")
 
@@ -105,9 +106,19 @@ def log_in():
 def auth_user_login(userName, userPassword):
       #check the user exists first
       db = get_db()
-      sql = "SELECT 'Password' FROM GLB_Accounts WHERE 'Email' = ?"
+      sql = "SELECT Password FROM GLB_Accounts where Email = ?"
       for row in db.cursor().execute(sql, [userName]):
-            return row
+            userActualPass = row
+      
+      #I'm really not proud of this, but it works
+      check = "(u'" + userPassword + "',)"
+      
+      if str(userActualPass) == str(check):
+            #if the passwords match, then the user is who they say they are, log them in 
+            start_sesh(userName)
+      else:
+            #the passwords dont match, so flash the user
+            return 'incorrect password'
 
 @app.route("/logout")
 def close_sesh():
