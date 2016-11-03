@@ -2,7 +2,7 @@ from flask import Flask, g, session, render_template, flash, url_for, request, r
 import string
 import random
 import sqlite3
-from pprint import pprint
+
 
 app = Flask("__name__")
 
@@ -115,7 +115,7 @@ def auth_user_login(userName, userPassword):
       
       if str(userActualPass) == str(check):
             #if the passwords match, then the user is who they say they are, log them in 
-            start_sesh(userName)
+            return start_sesh(userName)
       else:
             #the passwords dont match, so flash the user
             return 'incorrect password'
@@ -139,6 +139,24 @@ def debug_log_in():
       #used to force log in until the user accounts are built
       session['userName'] = 'Josh'
       return session['userName']
-            
+
+@app.route("/profile/<username>")
+def load_profile(username):
+      #check that the user exists, if not, send the user a 404
+      db = get_db()
+      sql = "SELECT Password from GLB_Accounts WHERE Username = ?"
+      for row in db.cursor().execute(sql, [username]):
+            return row
+      #get the user's data
+
+      
+@app.route("/profile/")
+def redirect_user():
+      #check if the user is logged in, if they are, send them to their profile, if not, send them to the index page
+      if 'userName' in session:
+            return 'You meant to go to your profile, didnt you?'
+      else:
+            return go_to_index()
+
 if __name__ == "__main__":
-      app.run(host="0.0.0.0")
+      app.run(host="0.0.0.0", debug=True)
