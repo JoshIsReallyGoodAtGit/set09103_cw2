@@ -137,26 +137,44 @@ def close_sesh():
 @app.route("/hard-login")
 def debug_log_in():
       #used to force log in until the user accounts are built
-      session['userName'] = 'Josh'
+      session['userName'] = 'jt3'
+      return session['userName']
+
+@app.route("/check-login")
+def debug_log_in_worked():
       return session['userName']
 
 @app.route("/profile/<username>")
-def load_profile(username):
+def load_profile(username = None):
+      count = 0
       #check that the user exists, if not, send the user a 404
       db = get_db()
-      sql = "SELECT Password from GLB_Accounts WHERE Username = ?"
+      sql = "SELECT * from GLB_User_Profiles WHERE Username = ?"
       for row in db.cursor().execute(sql, [username]):
-            return row
-      #get the user's data
+            #count how many rows there are
+            count =+ 1 
+      #if theres a row, the user exists
+      if count == 1:
+            user = username
+            userForename = row[2]
+            userSurname = row[1]
+            userBio = row[3]
+            userCountry = row[4]
+            return render_template("profile.html", user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry)
+      else:
+            #return an error
+            return "user does not exist"
+     
 
-      
 @app.route("/profile/")
 def redirect_user():
       #check if the user is logged in, if they are, send them to their profile, if not, send them to the index page
       if 'userName' in session:
-            return 'You meant to go to your profile, didnt you?'
+            username = session['userName']
+            return  load_profile(username)
       else:
-            return go_to_index()
+            return 'no session'
+            #return go_to_index()
 
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
