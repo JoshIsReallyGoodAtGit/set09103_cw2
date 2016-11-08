@@ -137,11 +137,7 @@ def close_sesh():
 @app.route("/hard-login")
 def debug_log_in():
       #used to force log in until the user accounts are built
-      session['userName'] = 'jt3'
-      return session['userName']
-
-@app.route("/check-login")
-def debug_log_in_worked():
+      #session['userName'] = 'jt3'
       return session['userName']
 
 @app.route("/profile/<username>")
@@ -152,15 +148,31 @@ def load_profile(username = None):
       sql = "SELECT * from GLB_User_Profiles WHERE Username = ?"
       for row in db.cursor().execute(sql, [username]):
             #count how many rows there are
-            count =+ 1 
+            count =+ 1
       #if theres a row, the user exists
       if count == 1:
+            #get the user's basic profile elements like name, bio and country
             user = username
             userForename = row[2]
             userSurname = row[1]
             userBio = row[3]
             userCountry = row[4]
-            return render_template("profile.html", user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry)
+            
+            #now, grab the user's posts
+            #reset count
+            count = 0
+            sqlGetUsersPosts = "SELECT Image_Path FROM GLB_User_Posts WHERE Username = ?"
+            
+            for row in db.cursor().execute(sqlGetUsersPosts, [username]):
+                  count =+ 1
+                  
+            if count > 0:
+                  imageCount = count
+                  userImage = row[0]
+                  return render_template("profile.html", user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry, userImage = userImage, imageCount = imageCount)
+            else:
+                  return 'user has not posted anything'
+            
       else:
             #return an error
             return "user does not exist"
