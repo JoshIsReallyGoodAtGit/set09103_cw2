@@ -137,7 +137,7 @@ def close_sesh():
 @app.route("/hard-login")
 def debug_log_in():
       #used to force log in until the user accounts are built
-      session['userName'] = 'jt3'
+      session['userName'] = 'jt4'
       return session['userName']
 
 @app.route("/profile/<username>")
@@ -175,14 +175,14 @@ def load_profile(username = None):
             
       else:
             #return an error
-            return "user does not exist"
+            return session['userName']
      
 
 @app.route("/profile/")
 def redirect_user():
       #check if the user is logged in, if they are, send them to their profile, if not, send them to the index page
       if 'userName' in session:
-            username = session['userName']
+            username = "'" + session['userName'] + "'"
             return  load_profile(username)
       else:
             return 'no session'
@@ -202,21 +202,30 @@ def get_users_profile_pic():
       else:
             return "didnt get anything. you used GET, didnt you?"
 
+
 def save_profile_pic(userFile):
-       #check if the user folder exists
-                  #create the path used to check if the user folder exists
-                  pathCheck = "static/user-uploads/" + "jt3/" 
-                  if os.path.isdir(pathCheck):
-                        #save the file
-                        userFile.save('static/user-uploads/jt3/test.png')
-                        return "overwritten"
-                  else:
-                        #create the directory
-                        os.mkdirs(pathCheck)
-                        #save the file in the newly created folder
-                        userFile.save('static/user-uploads/jt3/test.png')
-                        return "created in new folder"
-                  #now the file has been saved, reload the page
-                  return redirect_user()
+      #check if the user is still logged in first
+      if 'userName' in session:
+            #check if the user folder exists
+            #create the path used to check if the user folder exists
+            pathCheck = "static/user-uploads/" + session['userName'] + "/" 
+            if os.path.isdir(pathCheck):
+                  #save the file
+                  newPath = pathCheck + "profile-pic.png"
+                  userFile.save(newPath)
+                  
+            else:
+                  #create the directory
+                  os.mkdir(pathCheck)
+                  #save the file in the newly created folder
+                  newPath = pathCheck + "profile-pic.png"
+                  userFile.save(newPath)
+      
+            #now the file has been saved, reload the page
+            return redirect_user()
+
+      else:
+            return "you're not logged in!"
+
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
