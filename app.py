@@ -2,7 +2,7 @@ from flask import Flask, g, session, render_template, flash, url_for, request, r
 import string
 import random
 import sqlite3
-
+import os
 
 app = Flask("__name__")
 
@@ -137,7 +137,7 @@ def close_sesh():
 @app.route("/hard-login")
 def debug_log_in():
       #used to force log in until the user accounts are built
-      #session['userName'] = 'jt3'
+      session['userName'] = 'jt3'
       return session['userName']
 
 @app.route("/profile/<username>")
@@ -187,6 +187,36 @@ def redirect_user():
       else:
             return 'no session'
             #return go_to_index()
+            
+@app.route("/profile/update/pic", methods=['POST', 'GET'])
+def get_users_profile_pic():
+      #check if the user posted something first
+      if request.method == "POST":
+            userFile = request.files['updateProfilePic']
+            #check if userFile is empty
+            if userFile is not None:
+                 return save_profile_pic(userFile)
+            else:
+                  return "upload failed, file doesn't exist!"
+            
+      else:
+            return "didnt get anything. you used GET, didnt you?"
 
+def save_profile_pic(userFile):
+       #check if the user folder exists
+                  #create the path used to check if the user folder exists
+                  pathCheck = "static/user-uploads/" + "jt3/" 
+                  if os.path.isdir(pathCheck):
+                        #save the file
+                        userFile.save('static/user-uploads/jt3/test.png')
+                        return "overwritten"
+                  else:
+                        #create the directory
+                        os.mkdirs(pathCheck)
+                        #save the file in the newly created folder
+                        userFile.save('static/user-uploads/jt3/test.png')
+                        return "created in new folder"
+                  #now the file has been saved, reload the page
+                  return redirect_user()
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
