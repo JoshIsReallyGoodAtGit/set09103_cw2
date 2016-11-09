@@ -16,6 +16,8 @@
         <!--remodal-->
         <link href="/static/css/remodal.css" rel="stylesheet">
       <link href="/static/css/remodal-default-theme.css" rel="stylesheet">
+        <!--file-uploader-->
+        <link rel="stylesheet" href="/static/css/simple-demo.css" rel="stylesheet" />
         
   </head>
 <body>
@@ -36,12 +38,12 @@
 <section class="profile-header">
       <div class="profile-background-header">
             <div class="pull-right">
-                  <a href="#modalChangeBG" class="change-label">Edit</a>
+                  <a href="#0" data-remodal-target="updateBGPic" class="change-label">Edit</a>
           </div>
       </div>
       <img class="profile-img center-block block-center img-circle img-responsive" src="/static/img/placeholder-profile-img-lrg.jpg">
       <div class="center-block block-center text-center profile-label-cta">
-            <a href="#modalChangeBG" class="profile-label"><i class="fa fa-camera" aria-hidden="true" aria-label="edit profile picture"></i></a>
+            <a href="#0" data-remodal-target="updateProfilePicModal" class="profile-label"><i class="fa fa-camera" aria-hidden="true" aria-label="edit profile picture"></i></a>
       </div>
       <h1 class="profile-name">{{ userForename }} {{ userSurname }}</h1>
 </section>
@@ -79,19 +81,35 @@
       </div>
 </section>
 
-<div class="remodal" data-remodal-id="modal">
+<div class="remodal" data-remodal-id="updateProfilePicModal"  action="updateprofilepic" method="post">
       <button data-remodal-action="close" class="remodal-close"></button>
-      <div class="card-image-wrapper">
-            <img class="card-image img-responsive" src="/static/imgshowcase-1.jpg">
-      </div>
-      <div class="modal-card-bottom">
-            <div class="modal-card-profile pull-left">
-                  <img class="img-circle" src="/static/imgplaceholder-profile-img.jpg" alt="profile of __">
-                  <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                  <p class="card-profile-location">Barcelona</p>
-            </div>
-      </div>
+      <form class="modal-form" action="/profile/update/pic" method="POST" id="updateProfilePicForm" enctype="multipart/form-data">
+                  <input type="file" name="updateProfilePic" accept="image/jpeg" id="updateProfilePic">
+                  <a href="#0" onClick="submitFormProfilePic();" class="glbButton">Update</a>
+      </form>
 </div> <!--/remodal-->
+      
+<div class="remodal" data-remodal-id="updateBGPic">
+      <button data-remodal-action="close" class="remodal-close"></button>
+      <form class="card" action="/update/profilebg" method="post" id="updateCover">
+            <div class="input-group">
+                  <h2 class="text-center">Update Cover Photo</h2>
+            </div>
+            <div class="input-group">
+                  <input type="file" accept="image/jpeg" id="profilePic" defaultValue="">
+            </div>
+            <div class="input-group">
+                  <p class="form-label">Choose a position to display your image:</p>
+                  <select class="form-control" name="bgPosition">
+                        <option value="top">Display the top most</option>
+                        <option value="center">Display the middle most</option>
+                        <option value="bttom">Display the bottom most</option>
+                  </select>
+            </div>
+            <a href="#0" class="glbButton">Update</a>
+      </form>
+</div> <!--/remodal-->
+      
       
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/js/jquery.min.js"></script>
@@ -99,5 +117,10 @@
     <script src="/static/js/bootstrap.min.js"></script>
       <!--remodal JS --> 
       <script src="/static/js/remodal.min.js"></script>
+<script>
+      function submitFormProfilePic(){
+            $('#updateProfilePicForm').submit();
+      }
+</script>
   </body>
 </html>
