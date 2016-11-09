@@ -1,6 +1,10 @@
+                                                                                                  20 DAYS LEFT
+                                                                                                4/10 COMPLETE
+
+
 user visits /
 python checks if user is logged in
-      if logged in
+      if logged ins
             go to /feed.html
       if !logged in 
             go to index.html
@@ -26,7 +30,7 @@ user logs in
       fills in email
       fills in password
       validate inputs
-      sanitsise inputs
+      sanitise inputs
       if ok
             send form to App.py
             check credentails against Database
@@ -35,6 +39,9 @@ user logs in
             redirect to feed
       if details are !good
             flash errors and user tries again
+      
+      !!THIS IS ALMOST DONE - NEED TO ADD FORM VALIDATION/FLASHING, BUT FUNC. IS THERE
+
 
 user has three failed login attempts
       add item to log
@@ -46,7 +53,19 @@ user logs out
       session unset
       session destroyed
       user taken to logout.html or some notification saying they've logged out.
-
+      
+      !!THIS IS DONE
+      
+user clicks on another user's profile,  or their own one if they're logged in
+      url: profile/jt3
+      app.py takes the username
+      app.py takes all the data from the user, via query
+      app.py returns the profile page with the data
+      profile.html is loaded
+      jinja loads the custom data in the template
+      
+      !!THIS IS DONE YAY
+      
 user wants to post something
       user fills in form on /feed/
       check it's within size limits
@@ -65,7 +84,6 @@ user is on feed
 downloading a post
       use AJAX to take new posts
       use a while loop to display the new posts, printing out data in html template
-
 
 user clicks on 'Details' on a post
       jQuery creates the modal on the fly and populates it with the content from the respective post
