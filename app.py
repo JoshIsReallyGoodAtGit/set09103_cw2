@@ -214,25 +214,36 @@ def get_users_profile_pic():
 
 def save_profile_pic(userFile, userFileName):
       #check if the user is still logged in first
+      session['userName'] = "jt4"
       if 'userName' in session:
             #check if the user folder exists
             #create the path used to check if the user folder exists
             pathCheck = "static/user-uploads/" + session['userName'] + "/profile/" 
             if os.path.isdir(pathCheck):
-                  #save the file
-                  newPath = pathCheck + userFileName
-                  userFile.save(newPath)
+                  #the folder exists, check if there's anything in there, and if there is remove it so we can replace it
+                  if os.listdir(pathCheck) == "":
+                        #grab the old filename, take the first item in the list, because it should really only be the first one.
+                        fileDelete = os.listdir(pathCheck)[0]
+                        removeFile = pathCheck + fileDelete
+                        #remove the old profile picture
+                        os.remove(removeFile)
                   
+                  else:
+                        #if theres nothing there, just save the file
+                        newPath = pathCheck + userFileName
+                        userFile.save(newPath)
+                        
             else:
                   #create the directory
                   os.mkdir(pathCheck)
+                  #no need to delete any old files if its a newly created folder
                   #save the file in the newly created folder
                   newPath = pathCheck + userFileName
                   userFile.save(newPath)
+                  
+            #now the file has been saved, remove the old image
+            return pathCheck
       
-            #now the file has been saved, reload the page
-            return redirect_user()
-
       else:
             return "you're not logged in!"
       
@@ -262,18 +273,28 @@ def save_cover_photo(userFile, userFileName):
             #create the path used to check if the user folder exists
             pathCheck = "static/user-uploads/" + session['userName'] + "/cover/" 
             if os.path.isdir(pathCheck):
-                  #save the file
-                  newPath = pathCheck + userFileName
-                  userFile.save(newPath)
+                  #the folder exists, check if there's anything in there, and if there is remove it so we can replace it
+                  if os.listdir(pathCheck) == "":
+                        #grab the old filename, take the first item in the list, because it should really only be the first one.
+                        fileDelete = os.listdir(pathCheck)[0]
+                        removeFile = pathCheck + fileDelete
+                        #remove the old cover photo
+                        os.remove(removeFile)
                   
+                  else:
+                        #if theres nothing there, just save the file
+                        newPath = pathCheck + userFileName
+                        userFile.save(newPath)
+                        
             else:
                   #create the directory
                   os.mkdir(pathCheck)
+                  #no need to delete any old files if its a newly created folder
                   #save the file in the newly created folder
                   newPath = pathCheck + userFileName
                   userFile.save(newPath)
-      
-            #now the file has been saved, reload the page
+            
+            #now the file has been saved, remove the old image
             return redirect_user()
 
       else:
