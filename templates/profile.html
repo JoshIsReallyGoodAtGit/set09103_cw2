@@ -83,30 +83,32 @@
 
 <div class="remodal" data-remodal-id="updateProfilePicModal"  action="updateprofilepic" method="post">
       <button data-remodal-action="close" class="remodal-close"></button>
+      <h2 class="text-center">Update Profile Picture</h2>
+      <img src="/static/img/placeholder-profile-img-lrg.jpg" class="center-block img-responsive img-circle" alt="{{userForename}}'s Profile Picture">
       <form class="modal-form" action="/profile/update/pic" method="POST" id="updateProfilePicForm" enctype="multipart/form-data">
-                  <input type="file" name="updateProfilePic" accept="image/jpeg" id="updateProfilePic">
+            <div class="form-group file-btn-wrapper">
+                  <input type="file" class="fileButton center-block" name="updateProfilePic" accept="image/jpeg" id="updateProfilePic">
                   <a href="#0" onClick="submitFormProfilePic();" class="glbButton">Update</a>
+            </div>
       </form>
 </div> <!--/remodal-->
       
 <div class="remodal" data-remodal-id="updateBGPic">
       <button data-remodal-action="close" class="remodal-close"></button>
-      <form class="card" action="/update/profilebg" method="post" id="updateCover">
-            <div class="input-group">
-                  <h2 class="text-center">Update Cover Photo</h2>
+      <h2 class="text-center">Update Cover Photo</h2>
+      <form class="modal-form" action="/profile/update/bg" method="post" id="updateCover" enctype="multipart/form-data">
+            <div class="input-group center-block">
+                  <input type="file" class="fileButton" accept="image/jpeg" name="coverPhoto" accept="img/jpeg">
             </div>
-            <div class="input-group">
-                  <input type="file" accept="image/jpeg" id="profilePic" defaultValue="">
-            </div>
-            <div class="input-group">
-                  <p class="form-label">Choose a position to display your image:</p>
-                  <select class="form-control" name="bgPosition">
+            <div class="input-group center-block">
+                  <p class="form-label">Where should we display the most of your image?</p>
+                  <select class="form-control center-block" name="bgPosition">
                         <option value="top">Display the top most</option>
                         <option value="center">Display the middle most</option>
                         <option value="bttom">Display the bottom most</option>
                   </select>
             </div>
-            <a href="#0" class="glbButton">Update</a>
+            <a href="#0" onClick="submitBGPic();" class="glbButton">Update</a>
       </form>
 </div> <!--/remodal-->
       
@@ -120,6 +122,9 @@
 <script>
       function submitFormProfilePic(){
             $('#updateProfilePicForm').submit();
+      }
+      function submitBGPic(){
+            $('#updateCover').submit();
       }
 </script>
   </body>
