@@ -199,9 +199,12 @@ def get_users_profile_pic():
       #check if the user posted something first
       if request.method == "POST":
             userFile = request.files['updateProfilePic']
+            #grab the filename, too
+            userFileName = userFile.filename
+            
             #check if userFile is empty
             if userFile is not None:
-                 return save_profile_pic(userFile)
+                 return save_profile_pic(userFile, userFileName)
             else:
                   return "upload failed, file doesn't exist!"
             
@@ -209,22 +212,22 @@ def get_users_profile_pic():
             return "didnt get anything. you used GET, didnt you?"
 
 
-def save_profile_pic(userFile):
+def save_profile_pic(userFile, userFileName):
       #check if the user is still logged in first
       if 'userName' in session:
             #check if the user folder exists
             #create the path used to check if the user folder exists
-            pathCheck = "static/user-uploads/" + session['userName'] + "/" 
+            pathCheck = "static/user-uploads/" + session['userName'] + "/profile/" 
             if os.path.isdir(pathCheck):
                   #save the file
-                  newPath = pathCheck + "profile-pic.png"
+                  newPath = pathCheck + userFileName
                   userFile.save(newPath)
                   
             else:
                   #create the directory
                   os.mkdir(pathCheck)
                   #save the file in the newly created folder
-                  newPath = pathCheck + "profile-pic.png"
+                  newPath = pathCheck + userFileName
                   userFile.save(newPath)
       
             #now the file has been saved, reload the page
@@ -232,6 +235,49 @@ def save_profile_pic(userFile):
 
       else:
             return "you're not logged in!"
+      
+@app.route("/profile/update/bg", methods=['POST', 'GET'])
+def get_cover_photo():
+       #check if the user posted something first
+      if request.method == "POST":
+            userFile = request.files['coverPhoto']
+            #grab the file name, too
+            userFileName = userFile.filename
+            #this will come in handy later
+            coverOptions = request.form['bgPosition']
+            
+            #check if userFile is empty
+            if userFile is not None:
+                 return save_cover_photo(userFile, userFileName)
+            else:
+                  return "upload failed, file doesn't exist!"
+            
+      else:
+            return "didnt get anything. you used GET, didnt you?"
+      
+def save_cover_photo(userFile, userFileName):
+       #check if the user is still logged in first
+      if 'userName' in session:
+            #check if the user folder exists
+            #create the path used to check if the user folder exists
+            pathCheck = "static/user-uploads/" + session['userName'] + "/cover/" 
+            if os.path.isdir(pathCheck):
+                  #save the file
+                  newPath = pathCheck + userFileName
+                  userFile.save(newPath)
+                  
+            else:
+                  #create the directory
+                  os.mkdir(pathCheck)
+                  #save the file in the newly created folder
+                  newPath = pathCheck + userFileName
+                  userFile.save(newPath)
+      
+            #now the file has been saved, reload the page
+            return redirect_user()
 
+      else:
+            return "you're not logged in!"
+      
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
