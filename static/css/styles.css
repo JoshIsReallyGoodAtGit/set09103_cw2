@@ -48,15 +48,16 @@
 
 .glbButton{
       padding: 1.3%;
-      background: #09EF88;
-      color: #fff;
+      background: rgba(0,0,0,0);
+      border: 2px solid #09EF88;
+      color: #09EF88;
       border-radius: 5px;
       text-transform: uppercase;
        transition: all 300ms ease-in-out;
 }
 .glbButton:hover{
       color: #fff;
-      background: #00C46B;
+      background: #09EF88;
       transition: all 300ms ease-in-out;
       text-decoration: none;
 }
@@ -212,4 +213,32 @@
 .row.custom-padding > [class^="col-"],
 .row.custom-padding > [class*=" col-"] {
   padding: .25%;
+}
+.modal-form{
+      padding: 5%;
+      text-align: center;
+}
+
+input[type="file"]{
+      padding: 1%;
+      margin: 5% auto 5% auto !important;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+}
+input[type="file"]:focus{
+      border-color: #09EF88;
+}
+.modal-form a{
+      margin: 4% auto 4% auto;
+}
+.remodal img{
+      padding: 2% 10% 2% 10%;
+}
+.modal-form select{
+      padding: 1% !important; 
+      margin-bottom: 10% !important;
+}
+
+.modal-form option{
+      padding: 1%;
 }
