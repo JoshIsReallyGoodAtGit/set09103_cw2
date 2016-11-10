@@ -107,8 +107,14 @@ def auth_user_login(userName, userPassword):
       #check the user exists first
       db = get_db()
       sql = "SELECT Password FROM GLB_Accounts where Email = ?"
+      counter = 0
       for row in db.cursor().execute(sql, [userName]):
+            counter =+ 1
+      
+      if counter > 0:
             userActualPass = row
+      else:
+            return "user does not exist!"
       
       #I'm really not proud of this, but it works
       check = "(u'" + userPassword + "',)"
