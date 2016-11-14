@@ -126,21 +126,34 @@
       color: #09EF88;
 }
 
-.fab-post-wrapper{
-      position: fixed;
-      bottom: 0;
-      right: 20px;
+
+ a .fab-post{
+      color: #09EF88 !important;
+}
+
+a:hover .fab-post:hover{
+      color: #fefefe !important;
+      transition: background ease-in-out 300ms;
 }
 .fab-post{
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      margin: 0 2% 2% 0;
       background: #fefefe;
-      color: #000;
       text-align: center;
-      padding: 5%;
+      padding: 0px 17px 5px 17px;
+      border-radius: 100px;
+      transition: background ease-in-out 300ms;
+      font-size: 2.5em;
+      box-shadow: 0px 5px 11px -2px rgba(0, 0, 0, 0.18), 
+              0px 4px 12px -7px rgba(0, 0, 0, 0.15);
 }
-.fab-post p{
-      padding: 5% 2.5%;
-      font-size: 2em;
+.fab-post:hover{
+      background:  #09EF88;
+      transition: background ease-in-out 300ms;
 }
+
 .card-bottom{
       padding: 3% 3% 2% 3%;
       background: #fefefe;
