@@ -151,7 +151,9 @@ a:hover .fab-post:hover{
 }
 .fab-post:hover{
       background:  #09EF88;
-      transition: background ease-in-out 300ms;
+      transition: all ease-in-out 300ms;
+         box-shadow: 0px 6px 12px -1px rgba(0, 0, 0, 0.18), 
+              0px 5px 13px -6px rgba(0, 0, 0, 0.15);
 }
 
 .card-bottom{
@@ -254,4 +256,9 @@ input[type="file"]:focus{
 
 .modal-form option{
       padding: 1%;
+}
+
+textarea{
+      resize: none;
+      overflow-y: scroll;
 }

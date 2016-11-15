@@ -33,7 +33,7 @@
       </div><!--/row-->
 
 <section class="sectionFeed">
-     <a href="#0">
+     <a href="#0" data-remodal-target="addNewPost">
             <div class="fab-post">
                   &plus;
            </div>
@@ -94,6 +94,23 @@
       </div>
 </section>
 
+      <div class="remodal" data-remodal-id="addNewPost">
+      <button data-remodal-action="close" class="remodal-close"></button>
+      <h2 class="text-center">Add New Post</h2>
+      <form class="modal-form" action="/post/add" method="post" id="newPostForm" enctype="multipart/form-data">
+            <div class="input-group center-block">
+                  <p class="form-label">Say something</p>
+                  <textarea class="form-control"></textarea>
+            </div>
+            <br />
+             <div class="input-group center-block">
+                  <p class="form-label">Add an image: </p>
+                  <input type="file" class="fileButton" accept="image/jpeg" name="coverPhoto" accept="img/jpeg">
+            </div>
+            <a href="#0" onClick="submitNewPost" class="glbButton">Post</a>
+      </form>
+</div> <!--/remodal-->
+      
 <div class="remodal" data-remodal-id="modal">
       <button data-remodal-action="close" class="remodal-close"></button>
       <div class="card-image-wrapper">
@@ -107,6 +124,8 @@
             </div>
       </div>
 </div> <!--/remodal-->
+      
+
       
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/js/jquery.min.js"></script>
