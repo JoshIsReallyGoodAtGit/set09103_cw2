@@ -13,7 +13,6 @@ app.secret_key = ''.join(random.SystemRandom().choice(string.ascii_uppercase + s
 #specify database location
 dbLocation = 'data/globe.db'
 
-#underscores for functions, 
 
 def get_db():
       db = getattr(g, 'db', None)
@@ -76,6 +75,7 @@ def add_user(userName, userPassword):
                         return start_sesh(userName)
                   else:
                         return "oh no!"
+            db.close()
             
       
 def start_sesh(userName):
@@ -125,6 +125,8 @@ def auth_user_login(userName, userPassword):
       else:
             #the passwords dont match, so flash the user
             return 'incorrect password'
+      
+      db.close()
 
 @app.route("/logout")
 def close_sesh():
@@ -182,6 +184,8 @@ def load_profile(username = None):
       else:
             #return an error
             return session['userName']
+      
+      db.close()
      
 
 @app.route("/profile/")
@@ -268,37 +272,82 @@ def get_cover_photo():
       
 def save_cover_photo(userFile, userFileName):
        #check if the user is still logged in first
+      session['userName'] = "jt4"
+      
       if 'userName' in session:
-            #check if the user folder exists
             #create the path used to check if the user folder exists
-            pathCheck = "static/user-uploads/" + session['userName'] + "/cover/" 
-            if os.path.isdir(pathCheck):
-                  #the folder exists, check if there's anything in there, and if there is remove it so we can replace it
-                  if os.listdir(pathCheck) == "":
-                        #grab the old filename, take the first item in the list, because it should really only be the first one.
-                        fileDelete = os.listdir(pathCheck)[0]
-                        removeFile = pathCheck + fileDelete
-                        #remove the old cover photo
-                        os.remove(removeFile)
-                  
-                  else:
-                        #if theres nothing there, just save the file
-                        newPath = pathCheck + userFileName
-                        userFile.save(newPath)
-                        
-            else:
-                  #create the directory
-                  os.mkdir(pathCheck)
-                  #no need to delete any old files if its a newly created folder
-                  #save the file in the newly created folder
-                  newPath = pathCheck + userFileName
-                  userFile.save(newPath)
+            filePath = "static/user-uploads/" + session['userName'] + "/cover/" 
             
-            #now the file has been saved, remove the old image
-            return redirect_user()
+            #check if folder exists first
+            if os.path.isdir(filePath):
+                  #if the folder exists, it probably has something inside it, so delete it
+                  return format_folder_if_exists(filePath, userFileName)
 
       else:
             return "you're not logged in!"
       
+      
+      
+def format_folder_if_exists(filePath, userFileName):
+      #deletes any files in a given folder
+      #if theres any files, go through each one and remove it
+      if os.listdir(filePath):
+            for img in os.listdir(filePath):
+                  fileDelete = filePath + img
+                  os.remove(fileDelete)
+                  
+      else:
+            #the folder's empty, just save the file
+            return save_file(filePath,userFileName)
+            
+      
+def create_folder(filePath):
+      #create the directory
+      os.mkdir(filePath)
+      
+def save_file(filePath,userFileName):
+      userFile.save(filePath)
+      
+
+def get_file_extension(filePath, fileType):
+      
+      if os.listdir(filePath):
+            workingFile = os.listdir(filePath)[0]
+            index = 0
+            for char in workingFile:
+                  if char == ".":
+                        dotIndex = index
+                        #now we've got the ., find the length of the string
+                        workingFileLength = len(workingFile)
+                        
+                        #now we need to determine how many letters come after the '.' in the file_exists
+                        charCount = workingFileLength - dotIndex
+                        
+                                                                                    #start         #stop
+                        fileExtension = workingFile[dotIndex: workingFileLength]
+                        #now the file can be renamed
+                        
+                        #get the path of the file
+                        oldFilename = os.listdir(filePath)[0]
+                        oldFilename = filePath + oldFilename
+                        
+                        #create the new filename with path
+                        newFilename = 'cover' + fileExtension
+                        newFilename = filePath + newFilename
+                        
+                        #rename the file
+                        return rename_file(oldFilename, newFilename)
+                 
+                  index = index + 1
+      else:
+            return "folder empty"
+      
+      
+
+def rename_file(oldFilename, newFilename):
+      #now we have the new filename, let's rename the file
+      os.rename(oldFilename, newFilename)
+      return "done"
+
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
