@@ -153,8 +153,13 @@ def debug_log_in():
 @app.route("/profile/<username>")
 def load_profile(username = None):
       if 'userName' in session:
-            username = session['userName']
-            userHasControl = 1
+            #if the username entered in the URL is the same as the user that's logged in, the user has control
+            if username == str(session['userName']):
+                  userHasControl = 1
+                  #otherwise, lock the user from making changes
+            else:
+                  userHasControl = 0
+      #just in case
       else:
             userHasControl = 0
             
@@ -200,7 +205,7 @@ def load_profile(username = None):
 def redirect_user():
       #check if the user is logged in, if they are, send them to their profile, if not, send them to the index page
       if 'userName' in session:
-            username = "'" + session['userName'] + "'"
+            username = session['userName']
             return  load_profile(username)
       else:
             return go_to_index()
