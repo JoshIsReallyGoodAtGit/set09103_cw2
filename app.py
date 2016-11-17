@@ -251,7 +251,7 @@ def update_profile_pic(folder, fileType, userFile, userFileName):
                         img.format = "jpg"
                         #now, resize the image so it looks okay, a cover photo should at least be 1000 x 200, a profile pic at least 100 x 100
                         if fileType == "cover-pic.jpg":
-                              img.crop(0, 0, 0, 200)
+                              img.crop(10, 20, width=1920, height=500)
                         else:
                               img.resize(200, 200, 'undefined')
                               
