@@ -171,7 +171,6 @@ a:hover .fab-post:hover{
 .profile-background-header{
       padding: 3%;
       height: 45vh;
-      background: url(../img/header-bg.jpg);
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
@@ -196,7 +195,7 @@ a:hover .fab-post:hover{
       margin-top: 3%;
 }
 .profile-img{
-      margin-top: -125px;
+      margin-top: -100px;
 }
 .profile-label{
       padding: .5%;
