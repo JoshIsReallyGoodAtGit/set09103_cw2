@@ -152,6 +152,12 @@ def debug_log_in():
 
 @app.route("/profile/<username>")
 def load_profile(username = None):
+      if 'userName' in session:
+            username = session['userName']
+            userHasControl = 1
+      else:
+            userHasControl = 0
+            
       count = 0
       #check that the user exists, if not, send the user a 404
       db = get_db()
@@ -179,7 +185,7 @@ def load_profile(username = None):
             if count > 0:
                   imageCount = count
                   userImage = row[0]
-                  return render_template("profile.html", user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry, userImage = userImage, imageCount = imageCount)
+                  return render_template("profile.html", userHasControl = userHasControl, user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry, userImage = userImage, imageCount = imageCount)
             else:
                   return 'user has not posted anything'
             
@@ -199,35 +205,31 @@ def redirect_user():
       else:
             return go_to_index()
 
-            
-            
-
 #update profile actions
 @app.route("/profile/update/pic", methods=['POST', 'GET'])
 def get_users_profile_pic():
-      session['userName'] = "jt4"
-      #check if the user posted something first
-      if request.method == "POST":
-            userFile = request.files['updateProfilePic']
-            #grab the filename, too
-            userFileName = userFile.filename
+      if ['userName'] in session:
+            #check if the user posted something first
+            if request.method == "POST":
+                  userFile = request.files['updateProfilePic']
+                  #grab the filename, too
+                  userFileName = userFile.filename
+                  
+                  #check if userFile is empty
+                  if userFile is not None:
+                        folder = "static/user-uploads/" + session['userName'] + "/profile/"
+                        fileType = 'profile-pic.jpg'
+                        return update_profile_pic(folder, fileType, userFile, userFileName)
+                  else:
+                        return "upload failed, file doesn't exist!"
             
-            #check if userFile is empty
-            if userFile is not None:
-                  folder = "static/user-uploads/" + session['userName'] + "/profile/"
-                  fileType = 'profile-pic.jpg'
-                  return update_profile_pic(folder, fileType, userFile, userFileName)
             else:
-                  return "upload failed, file doesn't exist!"
-            
+                  return "didnt get anything. you used GET, didnt you?"
       else:
-            return "didnt get anything. you used GET, didnt you?"
-
+            return "not logged in!"
 
 def update_profile_pic(folder, fileType, userFile, userFileName):
       #check if the user is still logged in first
-      session['userName'] = "jt4"
-      
       if 'userName' in session:
             #check if the folder exists
             if os.path.isdir(folder):
@@ -281,24 +283,26 @@ def update_profile_pic(folder, fileType, userFile, userFileName):
 
 @app.route("/profile/update/bg", methods=['POST', 'GET'])
 def get_cover_photo():
-      session['userName'] = "jt4"
-       #check if the user posted something first
-      if request.method == "POST":
-            userFile = request.files['coverPhoto']
-            #grab the file name, too
-            userFileName = userFile.filename
+      #check if the user is still logged in first
+      if ['userName'] in session:
+            #check if the user posted something first
+            if request.method == "POST":
+                  userFile = request.files['coverPhoto']
+                  #grab the file name, too
+                  userFileName = userFile.filename
             
-            #check if userFile is empty
-            if userFile is not None:
-                  folder = "static/user-uploads/" + session['userName'] + "/profile/"
-                  fileType = 'cover-pic.jpg'
-                  return update_profile_pic(folder, fileType, userFile, userFileName)
+                  #check if userFile is empty
+                  if userFile is not None:
+                        folder = "static/user-uploads/" + session['userName'] + "/profile/"
+                        fileType = 'cover-pic.jpg'
+                        return update_profile_pic(folder, fileType, userFile, userFileName)
+                  else:
+                        return "upload failed, file doesn't exist!"
+            
             else:
-                  return "upload failed, file doesn't exist!"
-            
+                  return "didnt get anything. you used GET, didnt you?"
       else:
-            return "didnt get anything. you used GET, didnt you?"
-      
+            return "not logged in!"
 
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
