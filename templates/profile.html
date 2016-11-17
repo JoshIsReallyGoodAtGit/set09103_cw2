@@ -36,12 +36,12 @@
       </div><!--/row-->
 
 <section class="profile-header">
-      <div class="profile-background-header">
+      <div class="profile-background-header" style="background: url(/static/user-uploads/{{user}}//profile/cover-pic.jpg)">
             <div class="pull-right">
                   <a href="#0" data-remodal-target="updateBGPic" class="change-label">Edit</a>
           </div>
       </div>
-      <img class="profile-img center-block block-center img-circle img-responsive" src="/static/img/placeholder-profile-img-lrg.jpg">
+      <img class="profile-img center-block block-center img-circle img-responsive" src="/static/user-uploads/{{user}}//profile/profile-pic.jpg">
       <div class="center-block block-center text-center profile-label-cta">
             <a href="#0" data-remodal-target="updateProfilePicModal" class="profile-label"><i class="fa fa-camera" aria-hidden="true" aria-label="edit profile picture"></i></a>
       </div>
@@ -84,7 +84,7 @@
 <div class="remodal" data-remodal-id="updateProfilePicModal"  action="updateprofilepic" method="post">
       <button data-remodal-action="close" class="remodal-close"></button>
       <h2 class="text-center">Update Profile Picture</h2>
-      <img src="/static/img/placeholder-profile-img-lrg.jpg" class="center-block img-responsive img-circle" alt="{{userForename}}'s Profile Picture">
+      <img src="/static/user-uploads/{{user}}//profile/profile-pic.jpg" class="center-block img-responsive img-circle" alt="{{userForename}}'s Profile Picture">
       <form class="modal-form" action="/profile/update/pic" method="POST" id="updateProfilePicForm" enctype="multipart/form-data">
             <div class="form-group file-btn-wrapper">
                   <input type="file" class="fileButton center-block" name="updateProfilePic" accept="image/jpeg" id="updateProfilePic">
