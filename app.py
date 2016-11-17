@@ -1,8 +1,10 @@
 from flask import Flask, g, session, render_template, flash, url_for, request, redirect
+from wand.image import Image
 import string
 import random
 import sqlite3
 import os
+
 
 app = Flask("__name__")
 
@@ -195,11 +197,15 @@ def redirect_user():
             username = "'" + session['userName'] + "'"
             return  load_profile(username)
       else:
-            return 'no session'
-            #return go_to_index()
+            return go_to_index()
+
             
+            
+
+#update profile actions
 @app.route("/profile/update/pic", methods=['POST', 'GET'])
 def get_users_profile_pic():
+      session['userName'] = "jt4"
       #check if the user posted something first
       if request.method == "POST":
             userFile = request.files['updateProfilePic']
@@ -208,7 +214,9 @@ def get_users_profile_pic():
             
             #check if userFile is empty
             if userFile is not None:
-                 return save_profile_pic(userFile, userFileName)
+                  folder = "static/user-uploads/" + session['userName'] + "/profile/"
+                  fileType = 'profile-pic.jpg'
+                  return update_profile_pic(folder, fileType, userFile, userFileName)
             else:
                   return "upload failed, file doesn't exist!"
             
@@ -216,43 +224,58 @@ def get_users_profile_pic():
             return "didnt get anything. you used GET, didnt you?"
 
 
-def save_profile_pic(userFile, userFileName):
+def update_profile_pic(folder, fileType, userFile, userFileName):
       #check if the user is still logged in first
       session['userName'] = "jt4"
-      if 'userName' in session:
-            #check if the user folder exists
-            #create the path used to check if the user folder exists
-            pathCheck = "static/user-uploads/" + session['userName'] + "/profile/" 
-            if os.path.isdir(pathCheck):
-                  #the folder exists, check if there's anything in there, and if there is remove it so we can replace it
-                  if os.listdir(pathCheck) == "":
-                        #grab the old filename, take the first item in the list, because it should really only be the first one.
-                        fileDelete = os.listdir(pathCheck)[0]
-                        removeFile = pathCheck + fileDelete
-                        #remove the old profile picture
-                        os.remove(removeFile)
-                  
-                  else:
-                        #if theres nothing there, just save the file
-                        newPath = pathCheck + userFileName
-                        userFile.save(newPath)
-                        
-            else:
-                  #create the directory
-                  os.mkdir(pathCheck)
-                  #no need to delete any old files if its a newly created folder
-                  #save the file in the newly created folder
-                  newPath = pathCheck + userFileName
-                  userFile.save(newPath)
-                  
-            #now the file has been saved, remove the old image
-            return pathCheck
       
+      if 'userName' in session:
+            #check if the folder exists
+            if os.path.isdir(folder):
+                  #if it does, check if the actual file exists
+                  for thisFile in os.listdir(folder):
+                        if thisFile == fileType:
+                              fileToRemove = folder + fileType
+                              os.remove(fileToRemove)
+                              
+                  #save the new image with it's dodgy name and extension
+                  saveFilePath = folder + userFileName
+                 
+                  userFile.save(saveFilePath)
+
+                  #now convert the image 
+                  #saveFilePath = 'static/user-uploads/<username>/profile/filenameUserUploaded.png'
+                  
+                  #this next bit basically makes a 'save as' operation, without overwrite, so clone the image and save it as a jpeg, then delete the original png or whatever. 
+                  #three hours later, this now works
+                  with Image(filename=saveFilePath) as img:
+                        img.format = "jpg"
+                        newFile = folder + fileType
+                        
+                        #before we save the file, double-check that there's no file called 'profile-picture.jpg'. The chances of this are very small, but just to be safe
+                        for thisFile in os.listdir(folder):
+                              if thisFile == fileType:
+                                    fileToRemove = newFile
+                                    os.remove(fileToRemove)
+                        
+                        #good to save now
+                        img.save(filename=newFile)
+                        
+                  #now remove the old file (the dodgy one)
+                  os.remove(saveFilePath)
+                        
+                  #now list the directory, to check that it's worked
+                  for eachFile in os.listdir(folder):
+                       print eachFile
+                  
+                  #now the picture has been updated, reload the page
+                  return redirect_user()
       else:
             return "you're not logged in!"
       
+
 @app.route("/profile/update/bg", methods=['POST', 'GET'])
 def get_cover_photo():
+      session['userName'] = "jt4"
        #check if the user posted something first
       if request.method == "POST":
             userFile = request.files['coverPhoto']
@@ -263,91 +286,15 @@ def get_cover_photo():
             
             #check if userFile is empty
             if userFile is not None:
-                 return save_cover_photo(userFile, userFileName)
+                  folder = "static/user-uploads/" + session['userName'] + "/profile/"
+                  fileType = 'cover-pic.jpg'
+                  return update_profile_pic(folder, fileType, userFile, userFileName)
             else:
                   return "upload failed, file doesn't exist!"
             
       else:
             return "didnt get anything. you used GET, didnt you?"
       
-def save_cover_photo(userFile, userFileName):
-       #check if the user is still logged in first
-      session['userName'] = "jt4"
-      
-      if 'userName' in session:
-            #create the path used to check if the user folder exists
-            filePath = "static/user-uploads/" + session['userName'] + "/cover/" 
-            
-            #check if folder exists first
-            if os.path.isdir(filePath):
-                  #if the folder exists, it probably has something inside it, so delete it
-                  return format_folder_if_exists(filePath, userFileName)
-
-      else:
-            return "you're not logged in!"
-      
-      
-      
-def format_folder_if_exists(filePath, userFileName):
-      #deletes any files in a given folder
-      #if theres any files, go through each one and remove it
-      if os.listdir(filePath):
-            for img in os.listdir(filePath):
-                  fileDelete = filePath + img
-                  os.remove(fileDelete)
-                  
-      else:
-            #the folder's empty, just save the file
-            return save_file(filePath,userFileName)
-            
-      
-def create_folder(filePath):
-      #create the directory
-      os.mkdir(filePath)
-      
-def save_file(filePath,userFileName):
-      userFile.save(filePath)
-      
-
-def get_file_extension(filePath, fileType):
-      
-      if os.listdir(filePath):
-            workingFile = os.listdir(filePath)[0]
-            index = 0
-            for char in workingFile:
-                  if char == ".":
-                        dotIndex = index
-                        #now we've got the ., find the length of the string
-                        workingFileLength = len(workingFile)
-                        
-                        #now we need to determine how many letters come after the '.' in the file_exists
-                        charCount = workingFileLength - dotIndex
-                        
-                                                                                    #start         #stop
-                        fileExtension = workingFile[dotIndex: workingFileLength]
-                        #now the file can be renamed
-                        
-                        #get the path of the file
-                        oldFilename = os.listdir(filePath)[0]
-                        oldFilename = filePath + oldFilename
-                        
-                        #create the new filename with path
-                        newFilename = 'cover' + fileExtension
-                        newFilename = filePath + newFilename
-                        
-                        #rename the file
-                        return rename_file(oldFilename, newFilename)
-                 
-                  index = index + 1
-      else:
-            return "folder empty"
-      
-      
-
-def rename_file(oldFilename, newFilename):
-      #now we have the new filename, let's rename the file
-      os.rename(oldFilename, newFilename)
-      return "done"
 
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
