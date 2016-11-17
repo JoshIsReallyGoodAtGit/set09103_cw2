@@ -249,6 +249,12 @@ def update_profile_pic(folder, fileType, userFile, userFileName):
                   #three hours later, this now works
                   with Image(filename=saveFilePath) as img:
                         img.format = "jpg"
+                        #now, resize the image so it looks okay, a cover photo should at least be 1000 x 200, a profile pic at least 100 x 100
+                        if fileType == "cover-pic.jpg":
+                              img.crop(0, 0, 0, 200)
+                        else:
+                              img.resize(200, 200, 'undefined')
+                              
                         newFile = folder + fileType
                         
                         #before we save the file, double-check that there's no file called 'profile-picture.jpg'. The chances of this are very small, but just to be safe
