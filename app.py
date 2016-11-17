@@ -281,8 +281,6 @@ def get_cover_photo():
             userFile = request.files['coverPhoto']
             #grab the file name, too
             userFileName = userFile.filename
-            #this will come in handy later
-            coverOptions = request.form['bgPosition']
             
             #check if userFile is empty
             if userFile is not None:
