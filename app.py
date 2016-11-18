@@ -1,5 +1,6 @@
 from flask import Flask, g, session, render_template, flash, url_for, request, redirect
 from wand.image import Image
+from datetime import date
 import string
 import random
 import sqlite3
@@ -224,7 +225,11 @@ def get_users_profile_pic():
                   if userFile is not None:
                         folder = "static/user-uploads/" + session['userName'] + "/profile/"
                         fileType = 'profile-pic.jpg'
-                        return update_profile_pic(folder, fileType, userFile, userFileName)
+                        return prep_user_image(folder, fileType, userFile, userFileName)  
+                  
+                        #now the picture has been updated, reload the page
+                        return redirect_user()
+                  
                   else:
                         return "upload failed, file doesn't exist!"
             
@@ -248,7 +253,8 @@ def get_cover_photo():
                   if userFile is not None:
                         folder = "static/user-uploads/" + session['userName'] + "/profile/"
                         fileType = 'cover-pic.jpg'
-                        return update_profile_pic(folder, fileType, userFile, userFileName)
+                        return prep_user_image(folder, fileType, userFile, userFileName)
+                        
                   else:
                         return "upload failed, file doesn't exist!"
             
@@ -256,8 +262,67 @@ def get_cover_photo():
                   return "didnt get anything. you used GET, didnt you?"
       else:
             return "not logged in!"
+
+
+#post handlers
+@app.route("/post/add", methods=['POST', 'GET'])
+def get_post():
+      #check the user's still logged in 
+      #hard code it for dev
+      session['userName'] = "jt4"
+      if 'userName' in session:
+            #check if the user posted something
+            if request.method == "POST":
+                  postDesc = request.form['postDesc']
+                  postLocation = request.form['postLocation']
+                  userFile = request.files['postPhoto']
+                  #grab the filename too
+                  userFileName = userFile.filename
+                  
+                  #check if userFile is empty
+                  if userFile is not None:
+                        folder = "static/user-uploads/" + session['userName'] + "/posts/"
+                        fileType = 'post'
+                        #before we prep the image, we need to create a PostID used in the image name and in the database
+                        #PostID = username-random string
+                        postID = str(session['userName']) +  "-" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6)) 
+                        
+                        
+                        #prep the image and save it
+                        #need to pass the parameters for writing the sql query, but they wont be used in this function - 
+                        #they're the last two parameters.
+                        return prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, postLocation)
+                        
+                        
+                  else:
+                        return "upload failed, file doesn't exist!"
+            
+            else:
+                  return "used GET"
+            
+      else:
+            return 'not logged in!'
       
-def update_profile_pic(folder, fileType, userFile, userFileName):
+def add_user_post(postID, postDesc, postLocation, newFile):
+      db = get_db()
+      
+      #check if postDesc is empty
+      if postDesc == "":
+            postDesc = "null"
+            
+      #grab the username
+      postAuthor = session['userName']
+      
+      #write the query and execute it
+      db.cursor().execute("INSERT INTO GLB_User_Posts ('Post_ID', 'Post_Author', 'Post_Desc','Post_Loc') VALUES (?, ?, ?, ?)", [postID, postAuthor, postDesc, postLocation])
+      db.commit()
+      
+      return 'done!'
+
+
+def prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, postLocation):
+      #last to parameters not used in this function, only here to I can call the next function in the sequence
+      
       #check if the user is still logged in first
       if 'userName' in session:
             #check if the folder exists
@@ -279,11 +344,24 @@ def update_profile_pic(folder, fileType, userFile, userFileName):
                         #now, resize the image so it looks okay, a cover photo should at least be 1000 x 200, a profile pic at least 100 x 100
                         if fileType == "cover-pic.jpg":
                               img.crop(10, 20, width=1920, height=500)
-                        else:
+                              
+                        elif  fileType == "profile-pic.jpg":
                               img.resize(200, 200, 'undefined')
+                              
+                        elif fileType == "post":
+                              #do stuff
+                              print 'post'
                          
                         #set the path and filename for the new file, fileType is determined in the previous function (its either a cover photo or a profile pic)
-                        newFile = folder + fileType
+                        
+                        #this added bit prevents the app from breaking if the picture uploaded is for a post
+                        if fileType == "post":
+                              #if it's for a post, then alter the name of the image to post_<postID>.jpg
+                              newFile = folder + "post_" + postID + ".jpg"
+                              
+                        else:
+                              #otherwise, just carry on as normal
+                              newFile = folder + fileType
                         
                         #before we save the file, double-check that there's no file called 'profile-picture.jpg'. The chances of this are very small, but just to be safe
                         for thisFile in os.listdir(folder):
@@ -301,34 +379,20 @@ def update_profile_pic(folder, fileType, userFile, userFileName):
                   for eachFile in os.listdir(folder):
                        print eachFile
                   
-                  #now the picture has been updated, reload the page
-                  return redirect_user()
+                  #determine where to send the user now
+                  if fileType == "post":
+                        #now the image has been saved, update the database
+                        return add_user_post(postID, postDesc, postLocation, newFile)
+                              
+                  else:
+                        #just a profile action
+                        #now the picture has been updated, reload the page
+                        return redirect_user()
+                  
       else:
             return "you're not logged in!"
       
 
-
-#post handlers
-@app.route("/post/add", methods=['POST', 'GET'])
-def get_post():
-      #check the user's still logged in 
-      #hard code it for dev
-      session['userName'] = "jt4"
-      if 'userName' in session:
-            #check if the user posted something
-            if request.method == "POST":
-                  postDesc = request.form['postTitle']
-                  postImg = request.files['postImg']
-                  #grab the filename too
-                  postImgFilename = postImg.filename
-                  
-            
-            else:
-                  return "used GET"
-            
-      else:
-            return 'not logged in!'
-      
 
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
