@@ -46,7 +46,7 @@
                               <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
                               <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
                               <p class="card-profile-location">{{object1}}</p>
-                              <a class="card-profile-enlarge pull-right" href="#modal">Details</a>
+                              <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
                         </div> <!--/header-wrapper-->
                   </div><!--/header-->
                   <div class="card-image-wrapper">
@@ -60,33 +60,33 @@
              <div class="section-card-wrapper">
                   <div class="section-card-header">
                         <div class="card-profile">
-                              <img class="img-circle" src="../img/placeholder-profile-img.jpg" alt="profile of __">
+                              <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
                               <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                              <p class="card-profile-location">Barcelona</p>
-                              <a class="card-profile-enlarge pull-right" href="#0">Details</a>
+                              <p class="card-profile-location">{{object1}}</p>
+                              <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
                         </div> <!--/header-wrapper-->
                   </div><!--/header-->
                   <div class="card-image-wrapper">
                         <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
                   </div>
-                   <div class="card-bottom">
+                  <div class="card-bottom">
                        <p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting...
                         </p>
                    </div>
             </div>
-             <div class="section-card-wrapper">
+            <div class="section-card-wrapper">
                   <div class="section-card-header">
                         <div class="card-profile">
-                              <img class="img-circle" src="../img/placeholder-profile-img.jpg" alt="profile of __">
+                              <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
                               <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                              <p class="card-profile-location">Barcelona</p>
-                              <a class="card-profile-enlarge pull-right" href="#0">Details</a>
+                              <p class="card-profile-location">{{object1}}</p>
+                              <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
                         </div> <!--/header-wrapper-->
                   </div><!--/header-->
                   <div class="card-image-wrapper">
                         <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
                   </div>
-                   <div class="card-bottom">
+                  <div class="card-bottom">
                        <p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting...
                         </p>
                    </div>
@@ -97,22 +97,28 @@
       <div class="remodal" data-remodal-id="addNewPost">
       <button data-remodal-action="close" class="remodal-close"></button>
       <h2 class="text-center">Add New Post</h2>
-      <form class="modal-form" action="/post/add" method="post" id="newPostForm" enctype="multipart/form-data">
+      <form class="modal-form" action="/post/add" method="POST" id="newPostForm" enctype="multipart/form-data">
             <div class="input-group center-block">
-                  <p class="form-label">Say something</p>
-                  <textarea class="form-control"></textarea>
+                  <p class="form-label">Add an image: </p>
+                  <input type="file" class="fileButton" accept="image/jpeg" name="postPhoto" accept="img/jpeg">
             </div>
             <br />
-             <div class="input-group center-block">
-                  <p class="form-label">Add an image: </p>
-                  <input type="file" class="fileButton" accept="image/jpeg" name="coverPhoto" accept="img/jpeg">
+            <div class="input-group center-block">
+                  <p class="form-label">Where was this taken?</p>
+                  <input type="text" class="form-control" name="postCountry"></textarea>
             </div>
-            <a href="#0" onClick="submitNewPost" class="glbButton">Post</a>
+            <br />
+            <div class="input-group center-block">
+                  <p class="form-label">Tell us more about it</p>
+                  <textarea class="form-control" name="postDesc"></textarea>
+            </div>
+            <br />
+             
+            <a href="#0" onClick="submitNewPost();" class="glbButton m-t-1">Post</a>
       </form>
 </div> <!--/remodal-->
       
 <div class="remodal" data-remodal-id="modal">
-      <button data-remodal-action="close" class="remodal-close"></button>
       <div class="card-image-wrapper">
             <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
       </div>
@@ -121,6 +127,9 @@
                   <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
                   <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
                   <p class="card-profile-location">Barcelona</p>
+            </div>
+            <div class="pull-right">
+                   <button data-remodal-action="close" class="remodal-close"><i class="fa fa-compress fa-2x"></i></button>
             </div>
       </div>
 </div> <!--/remodal-->
@@ -133,5 +142,11 @@
     <script src="/static/js/bootstrap.min.js"></script>
       <!--remodal JS --> 
       <script src="/static/js/remodal.min.js"></script>
+      
+      <script>
+            function submitNewPost(){
+                  $('#newPostForm').submit()
+            }
+      </script>
   </body>
 </html>

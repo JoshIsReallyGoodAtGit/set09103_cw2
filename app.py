@@ -307,5 +307,28 @@ def update_profile_pic(folder, fileType, userFile, userFileName):
             return "you're not logged in!"
       
 
+
+#post handlers
+@app.route("/post/add", methods=['POST', 'GET'])
+def get_post():
+      #check the user's still logged in 
+      #hard code it for dev
+      session['userName'] = "jt4"
+      if 'userName' in session:
+            #check if the user posted something
+            if request.method == "POST":
+                  postDesc = request.form['postTitle']
+                  postImg = request.files['postImg']
+                  #grab the filename too
+                  postImgFilename = postImg.filename
+                  
+            
+            else:
+                  return "used GET"
+            
+      else:
+            return 'not logged in!'
+      
+
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
