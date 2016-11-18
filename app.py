@@ -21,6 +21,9 @@ def get_db():
       db = getattr(g, 'db', None)
       if db is None:
             db = sqlite3.connect(dbLocation)
+            #set up rows for queries
+            db.row_factory = sqlite3.Row
+            
             g.gb = db
       return db
 
@@ -39,8 +42,17 @@ def determine_user_path():
             return go_to_index()
 
 @app.route("/feed/")
-def go_to_feed():
-      return render_template('feed.html')
+def get_feed():
+      #now there's posts in the database, the app can access and display them
+      db = get_db()
+      
+      sql = """SELECT * FROM GLB_User_Posts
+                        ORDER BY Date_Posted DESC"""
+      
+      rows = db.cursor().execute(sql).fetchall()
+            
+      #now the values have been retrieved, send the user to the feed
+      return render_template('feed.html', rows = rows)
 
 def go_to_index():
       return render_template('index.html')
@@ -312,12 +324,26 @@ def add_user_post(postID, postDesc, postLocation, newFile):
             
       #grab the username
       postAuthor = session['userName']
+      #grab the user's full name
+      sql  = "SELECT Forename, Surname FROM GLB_User_Profiles WHERE Username = ?"
+      counter = 0
+      for row in db.cursor().execute(sql, [postAuthor]):
+            counter =+ 1
+      
+      if counter > 0:
+            postAuthor = str(row[0]) + " " + str(row[1])
+      else:
+            return "user does not exist!"
+      
+      #grab todays date 
+      todaysDate = date.today()
       
       #write the query and execute it
-      db.cursor().execute("INSERT INTO GLB_User_Posts ('Post_ID', 'Post_Author', 'Post_Desc','Post_Loc') VALUES (?, ?, ?, ?)", [postID, postAuthor, postDesc, postLocation])
+      db.cursor().execute("INSERT INTO GLB_User_Posts ('Post_ID', 'Post_Author','Date_Posted', 'Post_Desc','Post_Loc') VALUES (?, ?, ?, ?, ?)", [postID, postAuthor, todaysDate, postDesc, postLocation])
       db.commit()
       
-      return 'done!'
+      #the post has been added, reload the feed
+      return render_template('feed.html')
 
 
 def prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, postLocation):
