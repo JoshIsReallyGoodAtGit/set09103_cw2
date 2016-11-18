@@ -34,64 +34,33 @@
 
 <section class="sectionFeed">
      <a href="#0" data-remodal-target="addNewPost">
-            <div class="fab-post">
+           <div class="fab-post">
                   &plus;
            </div>
       <a/>
-           
+            
       <div class="container">
-            <div class="section-card-wrapper">
+            {% for row in rows %}
+                 <div class="section-card-wrapper">
                   <div class="section-card-header">
                         <div class="card-profile">
                               <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
-                              <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                              <p class="card-profile-location">{{object1}}</p>
+                              <a class="card-profile-name" href="#0">{{ row['Post_Author']}}</a> in 
+                              <p class="card-profile-location">{{row['Post_Loc']}}</p>
                               <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
                         </div> <!--/header-wrapper-->
                   </div><!--/header-->
                   <div class="card-image-wrapper">
                         <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
                   </div>
-                  <div class="card-bottom">
-                       <p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting...
-                        </p>
-                   </div>
-            </div>
-             <div class="section-card-wrapper">
-                  <div class="section-card-header">
-                        <div class="card-profile">
-                              <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
-                              <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                              <p class="card-profile-location">{{object1}}</p>
-                              <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
-                        </div> <!--/header-wrapper-->
-                  </div><!--/header-->
-                  <div class="card-image-wrapper">
-                        <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
+                  {% if row['Post_Desc'] != "null" %}
+                        <div class="card-bottom">
+                              <p> {{row['Post_Desc']}}</p>
+                        </div>
+                  {% endif %}
                   </div>
-                  <div class="card-bottom">
-                       <p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting...
-                        </p>
-                   </div>
-            </div>
-            <div class="section-card-wrapper">
-                  <div class="section-card-header">
-                        <div class="card-profile">
-                              <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
-                              <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                              <p class="card-profile-location">{{object1}}</p>
-                              <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
-                        </div> <!--/header-wrapper-->
-                  </div><!--/header-->
-                  <div class="card-image-wrapper">
-                        <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
-                  </div>
-                  <div class="card-bottom">
-                       <p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting...
-                        </p>
-                   </div>
-            </div>
-      </div>
+      {% endfor %} 
+           </div><!--/container-->
 </section>
 
       <div class="remodal" data-remodal-id="addNewPost">
@@ -105,16 +74,18 @@
             <br />
             <div class="input-group center-block">
                   <p class="form-label">Where was this taken?</p>
-                  <input type="text" class="form-control" name="postCountry"></textarea>
+                  <input type="text" class="form-control" name="postLocation"></textarea>
             </div>
             <br />
             <div class="input-group center-block">
-                  <p class="form-label">Tell us more about it</p>
+                  <p class="form-label">Tell us more about it (optional)</p>
                   <textarea class="form-control" name="postDesc"></textarea>
             </div>
             <br />
              
-            <a href="#0" onClick="submitNewPost();" class="glbButton m-t-1">Post</a>
+            <div class="p-t-1 m-t-1">
+                  <a href="#0" onClick="submitNewPost();" class="glbButton m-t-1">Post</a>
+            </div>
       </form>
 </div> <!--/remodal-->
       
