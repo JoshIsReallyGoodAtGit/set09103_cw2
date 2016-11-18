@@ -2,7 +2,7 @@
 .globeNavbar{
       padding: 2% 4% 3.5% 4%;
       background: #fff;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid #dbdbdb;
       color: #ccc;
 }
 .globeNavbar .col-xs-4{
@@ -93,13 +93,13 @@
 }
 /*feed*/
 .sectionFeed{
-      background: #f0f0f0;
+      background: #FAFAFA;
 }
 /*cards for feed section */
 /*the card itself */
 .section-card-wrapper{
       margin: 3% 25%;
-      border: 1px solid #ccc;
+      border: 1px solid #dbdbdb;
       border-radius: 5px;
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
@@ -246,7 +246,8 @@ input[type="file"]:focus{
       margin: 4% auto 4% auto;
 }
 .remodal img{
-      padding: 2% 10% 2% 10%;
+      /*padding: 2% 10% 2% 10%; */
+      overflow: hidden;
 }
 .modal-form select{
       padding: 1% !important; 
@@ -260,4 +261,8 @@ input[type="file"]:focus{
 textarea{
       resize: none;
       overflow-y: scroll;
+}
+#newPostForm{
+      padding: 5% 10% 5% 10%;
+      overflow-y: hidden;
 }
