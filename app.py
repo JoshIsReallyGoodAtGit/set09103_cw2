@@ -233,58 +233,6 @@ def get_users_profile_pic():
       else:
             return "not logged in!"
 
-def update_profile_pic(folder, fileType, userFile, userFileName):
-      #check if the user is still logged in first
-      if 'userName' in session:
-            #check if the folder exists
-            if os.path.isdir(folder):
-                  #if it does, check if the actual file exists
-                  for thisFile in os.listdir(folder):
-                        if thisFile == fileType:
-                              fileToRemove = folder + fileType
-                              os.remove(fileToRemove)
-                              
-                  #save the new image with it's dodgy name and extension
-                  saveFilePath = folder + userFileName
-                 
-                  userFile.save(saveFilePath)
-
-                  #now convert the image 
-                  #saveFilePath = 'static/user-uploads/<username>/profile/filenameUserUploaded.png'
-                  
-                  #this next bit basically makes a 'save as' operation, without overwrite, so clone the image and save it as a jpeg, then delete the original png or whatever. 
-                  #three hours later, this now works
-                  with Image(filename=saveFilePath) as img:
-                        img.format = "jpg"
-                        #now, resize the image so it looks okay, a cover photo should at least be 1000 x 200, a profile pic at least 100 x 100
-                        if fileType == "cover-pic.jpg":
-                              img.crop(10, 20, width=1920, height=500)
-                        else:
-                              img.resize(200, 200, 'undefined')
-                              
-                        newFile = folder + fileType
-                        
-                        #before we save the file, double-check that there's no file called 'profile-picture.jpg'. The chances of this are very small, but just to be safe
-                        for thisFile in os.listdir(folder):
-                              if thisFile == fileType:
-                                    fileToRemove = newFile
-                                    os.remove(fileToRemove)
-                        
-                        #good to save now
-                        img.save(filename=newFile)
-                        
-                  #now remove the old file (the dodgy one)
-                  os.remove(saveFilePath)
-                        
-                  #now list the directory, to check that it's worked
-                  for eachFile in os.listdir(folder):
-                       print eachFile
-                  
-                  #now the picture has been updated, reload the page
-                  return redirect_user()
-      else:
-            return "you're not logged in!"
-      
 
 @app.route("/profile/update/bg", methods=['POST', 'GET'])
 def get_cover_photo():
@@ -308,6 +256,56 @@ def get_cover_photo():
                   return "didnt get anything. you used GET, didnt you?"
       else:
             return "not logged in!"
+      
+def update_profile_pic(folder, fileType, userFile, userFileName):
+      #check if the user is still logged in first
+      if 'userName' in session:
+            #check if the folder exists
+            if os.path.isdir(folder):
+                  #if it does, check if the actual file exists
+                  for thisFile in os.listdir(folder):
+                        if thisFile == fileType:
+                              fileToRemove = folder + fileType
+                              os.remove(fileToRemove)
+                              
+                  #save the new image with it's dodgy name and extension
+                  saveFilePath = folder + userFileName
+                  userFile.save(saveFilePath)
+                  
+                  #this next bit basically makes a 'save as' operation, without overwrite, so clone the image and save it as a jpeg, then delete the original png or whatever. 
+                  #three hours later, this now works
+                  with Image(filename=saveFilePath) as img:
+                        img.format = "jpg"
+                        #now, resize the image so it looks okay, a cover photo should at least be 1000 x 200, a profile pic at least 100 x 100
+                        if fileType == "cover-pic.jpg":
+                              img.crop(10, 20, width=1920, height=500)
+                        else:
+                              img.resize(200, 200, 'undefined')
+                         
+                        #set the path and filename for the new file, fileType is determined in the previous function (its either a cover photo or a profile pic)
+                        newFile = folder + fileType
+                        
+                        #before we save the file, double-check that there's no file called 'profile-picture.jpg'. The chances of this are very small, but just to be safe
+                        for thisFile in os.listdir(folder):
+                              if thisFile == fileType:
+                                    fileToRemove = newFile
+                                    os.remove(fileToRemove)
+                        
+                        #good to save now
+                        img.save(filename=newFile)
+                        
+                  #now remove the old file (the dodgy one)
+                  os.remove(saveFilePath)
+                        
+                  #now list the directory, to check that it's worked
+                  for eachFile in os.listdir(folder):
+                       print eachFile
+                  
+                  #now the picture has been updated, reload the page
+                  return redirect_user()
+      else:
+            return "you're not logged in!"
+      
 
 if __name__ == "__main__":
       app.run(host="0.0.0.0", debug=True)
