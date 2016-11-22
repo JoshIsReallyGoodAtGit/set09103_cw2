@@ -45,9 +45,9 @@
                   <div class="section-card-header">
                         <div class="card-profile">
                               <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
-                              <a class="card-profile-name" href="#0">{{ row['Post_Author']}}</a> in 
+                              <a class="card-profile-name" href="#0">{{ postAuth }}</a> in 
                               <p class="card-profile-location">{{row['Post_Loc']}}</p>
-                              <a class="card-profile-enlarge pull-right" href="#modal"><i class="fa fa-expand"></i></a>
+                              <a class="card-profile-enlarge pull-right" href="#0" onClick="makeModal('{{postAuth}}', '{{row['Post_Loc']}}');"><i class="fa fa-expand"></i></a>
                         </div> <!--/header-wrapper-->
                   </div><!--/header-->
                   <div class="card-image-wrapper">
@@ -74,7 +74,7 @@
             <br />
             <div class="input-group center-block">
                   <p class="form-label">Where was this taken?</p>
-                  <input type="text" class="form-control" name="postLocation"></textarea>
+                  <input type="text" class="form-control" name="postLocation">
             </div>
             <br />
             <div class="input-group center-block">
@@ -89,23 +89,11 @@
       </form>
 </div> <!--/remodal-->
       
-<div class="remodal" data-remodal-id="modal">
-      <div class="card-image-wrapper">
-            <img class="card-image img-responsive" src="/static/img/showcase-1.jpg">
-      </div>
-      <div class="modal-card-bottom">
-            <div class="modal-card-profile pull-left">
-                  <img class="img-circle" src="/static/img/placeholder-profile-img.jpg" alt="profile of __">
-                  <a class="card-profile-name" href="#0">Joe Bloggs</a> in 
-                  <p class="card-profile-location">Barcelona</p>
-            </div>
-            <div class="pull-right">
-                   <button data-remodal-action="close" class="remodal-close"><i class="fa fa-compress fa-2x"></i></button>
-            </div>
-      </div>
+<div class="remodal" data-remodal-id="modal" id="modal">
+      
 </div> <!--/remodal-->
       
-
+<div id="test"></div>
       
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="/static/js/jquery.min.js"></script>
@@ -116,7 +104,16 @@
       
       <script>
             function submitNewPost(){
-                  $('#newPostForm').submit()
+                  $('#newPostForm').submit();
+            }
+            function makeModal(postAuth, postLoc){
+                  //the following function dynamically creates the markup for a modal and then triggers it with the desired information (passed via parameters in the html)
+                  //create the modals
+                  $('#modal').html("<div class='card-image-wrapper'> <img class='card-image img-responsive' src='/static/img/showcase-1.jpg'> </div><div class='modal-card-bottom'><div class='modal-card-profile pull-left'><img class='img-circle' src='/static/img/placeholder-profile-img.jpg' alt='profile of __'><a class='card-profile-name' href='#0'> " + postAuth + " </a> in <p class='card-profile-location'> " + postLoc + " </p></div><div class='pull-right'><button data-remodal-action='close' class='remodal-close'><i class='fa fa-compress fa-2x'></i></button></div></div>");
+                  
+                  //open the modal
+                  var inst = $('[data-remodal-id=modal]').remodal();
+                  inst.open();
             }
       </script>
   </body>
