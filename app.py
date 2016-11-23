@@ -42,6 +42,12 @@ def determine_user_path():
 
 @app.route("/feed/")
 def get_feed():
+      #check if the user's logged in, if not, they can't access the 'post' button
+      if 'userName' in session:
+            userCanPost = True
+      else:
+            userCanPost = False
+            
       #now there's posts in the database, the app can access and display them
       db = get_db()
       
@@ -51,7 +57,7 @@ def get_feed():
       rows = db.cursor().execute(sql).fetchall()
             
       #now the values have been retrieved, send the user to the feed
-      return render_template('feed.html', rows = rows)
+      return render_template('feed.html', rows = rows, userCanPost = userCanPost)
 
 def go_to_index():
       return render_template('index.html')
@@ -128,7 +134,7 @@ def auth_user_login(userName, userPassword):
       if counter > 0:
             userActualPass = row
       else:
-            return "user does not exist!"
+            return something_went_wrong()
       
       #I'm really not proud of this, but it works
       check = "(u'" + userPassword + "',)"
@@ -150,7 +156,9 @@ def close_sesh():
             #check the user was actually logged out
             if 'userName' in session:
                   return something_went_wrong()
-
+            else:
+                  return determine_user_path()
+            
       else:
             #return them to /
             return determine_user_path()
