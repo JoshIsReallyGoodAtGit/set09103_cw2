@@ -23,7 +23,6 @@ def get_db():
             db = sqlite3.connect(dbLocation)
             #set up rows for queries
             db.row_factory = sqlite3.Row
-            
             g.gb = db
       return db
 
@@ -37,7 +36,7 @@ def close_db_connection(exception):
 @app.route("/")
 def determine_user_path():
       if 'userName' in session:
-           return go_to_feed()
+           return get_feed()
       else:
             return go_to_index()
 
@@ -89,7 +88,7 @@ def add_user(userName, userPassword):
                         #now the user has created an account, they will be auto-logged in
                         return start_sesh(userName)
                   else:
-                        return "oh no!"
+                        return something_went_wrong()
             db.close()
             
       
@@ -150,9 +149,8 @@ def close_sesh():
             session.pop('userName', None)
             #check the user was actually logged out
             if 'userName' in session:
-                  return "Logout failed! :("
-            else:
-                  return "Logged out successfully!"
+                  return something_went_wrong()
+
       else:
             #return them to /
             return determine_user_path()
@@ -205,7 +203,7 @@ def load_profile(username = None):
                   userImage = row[0]
                   return render_template("profile.html", userHasControl = userHasControl, user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry, userImage = userImage, imageCount = imageCount)
             else:
-                  return 'user has not posted anything'
+                  return something_went_wrong()
             
       else:
             #return an error
@@ -221,7 +219,7 @@ def redirect_user():
             username = session['userName']
             return  load_profile(username)
       else:
-            return go_to_index()
+            return not_today(403)
 
 #update profile actions
 @app.route("/profile/update/pic", methods=['POST', 'GET'])
@@ -243,12 +241,12 @@ def get_users_profile_pic():
                         return redirect_user()
                   
                   else:
-                        return "upload failed, file doesn't exist!"
+                        return something_went_wrong()
             
             else:
-                  return "didnt get anything. you used GET, didnt you?"
+                  return something_went_wrong()
       else:
-            return "not logged in!"
+             return not_today(403)
 
 
 @app.route("/profile/update/bg", methods=['POST', 'GET'])
@@ -268,12 +266,12 @@ def get_cover_photo():
                         return prep_user_image(folder, fileType, userFile, userFileName)
                         
                   else:
-                        return "upload failed, file doesn't exist!"
+                        return something_went_wrong()
             
             else:
-                  return "didnt get anything. you used GET, didnt you?"
+                   return not_today(403)
       else:
-            return "not logged in!"
+             return not_today(403)
 
 
 #post handlers
@@ -307,13 +305,13 @@ def get_post():
                         
                         
                   else:
-                        return "upload failed, file doesn't exist!"
+                        return something_went_wrong()
             
             else:
-                  return "used GET"
+                  return something_went_wrong()
             
       else:
-            return 'not logged in!'
+            return not_today(403)
       
 def add_user_post(postID, postDesc, postLocation, newFile):
       db = get_db()
@@ -333,7 +331,7 @@ def add_user_post(postID, postDesc, postLocation, newFile):
       if counter > 0:
             postAuthor = str(row[0]) + " " + str(row[1])
       else:
-            return "user does not exist!"
+           return something_went_wrong()
       
       #grab todays date 
       todaysDate = date.today()
@@ -416,8 +414,29 @@ def prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, 
                         return redirect_user()
                   
       else:
-            return "you're not logged in!"
+            return not_today(403)
       
+
+#error handlers
+      
+@app.errorhandler(404)
+def uhOh(error):
+      return render_template("404.html")
+
+@app.errorhandler(403)
+def not_today(error):
+      return render_template("403.html")
+
+
+#for when SHTF
+def something_went_wrong():
+      return render_template("stuck.html")
+
+@app.route("/testt")
+def something_went_wrong():
+      return render_template("stuck.html")
+
+
 
 
 if __name__ == "__main__":
