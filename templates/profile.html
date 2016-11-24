@@ -73,10 +73,7 @@
              <h2 class="profile-heading">Posts</h2>
              <div class="row img-canvas custom-padding">
                   {# display the posts #}
-                   {% if rowsForPosts is none %}
-                         <p>User Has No Posts</p>
-                   {% endif %}
-                   {% if rowsForPosts is not none %}
+                   {% if rowsForPosts %}
                         {% for post in rowsForPosts %}
                               {# images for each post are set dynamically #}
                               {% set userImagePath = "/static/user-uploads/" ~ user ~ "/posts/post_" ~ post['Post_ID'] ~ ".jpg" %}
@@ -84,6 +81,8 @@
                                     <img class="profile-img-tile" src="{{ userImagePath }}">
                               </div>
                         {% endfor%}
+                        {% else %}
+                                <p>User Hasn't posted anything :(</p>
                   {% endif %}
             </div>
       </div>
