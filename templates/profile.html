@@ -1,3 +1,9 @@
+{# declare the profile variables, post variables are not set because they are declared via loop later in the page #}
+      {% set userName = rowsForProfile['Forename']   ~ " " ~ rowsForProfile['Surname']  %}
+      {% set user = rowsForProfile['Username'] %}
+      {% set userBio = rowsForProfile['Bio'] %}
+      {{ userHasPosts }}
+
 <!DOCTYPE html>
 <html lang="en-gb">
   <head>
@@ -8,7 +14,7 @@
         {% if userHasControl == 1%}
             <title>Project Globe: Your Profile</title>
         {% endif %}
-         <title>Project Globe: {{userForename}} {{userSurname}}'s Profile</title>
+         <title>Project Globe: {{ userName }}'s Profile</title>
     <!-- Bootstrap -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!--Custom CSS -->
@@ -19,8 +25,6 @@
         <!--remodal-->
         <link href="/static/css/remodal.css" rel="stylesheet">
       <link href="/static/css/remodal-default-theme.css" rel="stylesheet">
-        <!--file-uploader-->
-        <link rel="stylesheet" href="/static/css/simple-demo.css" rel="stylesheet" />
         {% endif %}
         
   </head>
@@ -38,53 +42,49 @@
                   </div><!--/col-xs-4 -->
           </div><!--/navbar-->
       </div><!--/row-->
-
+      
 <section class="profile-header">
-      <div class="profile-background-header" style="background: url(/static/user-uploads/{{user}}//profile/cover-pic.jpg)">
+      <div class="profile-background-header" style="background-repeat: no-repeat; background: url(/static/user-uploads/{{user}}//profile/cover-pic.jpg)">
              {% if userHasControl == 1%}
                   <div class="pull-right">
                         <a href="#0" data-remodal-target="updateBGPic" class="change-label">Edit</a>
                   </div>
             {% endif %}
       </div>
-      <img class="profile-img center-block block-center img-circle img-responsive" src="/static/user-uploads/{{user}}//profile/profile-pic.jpg">
+      <img class="profile-img center-block block-center img-circle img-responsive" src="/static/user-uploads/{{user}}//profile/profile-picture.jpg">
       {% if userHasControl == 1%}
        <div class="center-block block-center text-center profile-label-cta">
             <a href="#0" data-remodal-target="updateProfilePicModal" class="profile-label"><i class="fa fa-camera" aria-hidden="true" aria-label="edit profile picture"></i></a>
       </div>
       {% endif %}
-      <h1 class="profile-name"> {{ userForename }} {{ userSurname }}</h1>
+      <h1 class="profile-name">{{ userName }}</h1>
 </section>
 
 <section id="profile-bio" class="m-t-1">
       <div class="container">
             <h2 class="profile-heading">About</h2>
-            <p  class="profile-bio-text">{{userBio}}</p>
+            <p  class="profile-bio-text">{{ userBio }}</p>
       </div>
 </section>
 
+{# check how many posts the user has first #}
 <section id="profile-img-canvas" class="m-t-1">
       <div class="container">
-             <h2 class="profile-heading">Posts ({{ imageCount }})</h2>
-            <div class="row img-canvas custom-padding">
-                  <div class="col-xs-6 col-sm-4">
-                        <img class="profile-img-tile" src="{{userImage}}">
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                        <img class="profile-img-tile" src="{{userImage}}">
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                        <img class="profile-img-tile" src="{{userImage}}">
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                        <img class="profile-img-tile" src="{{userImage}}">
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                        <img class="profile-img-tile" src="{{userImage}}">
-                  </div>
-                  <div class="col-xs-6 col-sm-4">
-                        <img class="profile-img-tile" src="{{userImage}}">
-                  </div>
+             <h2 class="profile-heading">Posts</h2>
+             <div class="row img-canvas custom-padding">
+                  {# display the posts #}
+                   {% if rowsForPosts is none %}
+                         <p>User Has No Posts</p>
+                   {% endif %}
+                   {% if rowsForPosts is not none %}
+                        {% for post in rowsForPosts %}
+                              {# images for each post are set dynamically #}
+                              {% set userImagePath = "/static/user-uploads/" ~ user ~ "/posts/post_" ~ post['Post_ID'] ~ ".jpg" %}
+                              <div class="col-xs-6 col-sm-4">
+                                    <img class="profile-img-tile" src="{{ userImagePath }}">
+                              </div>
+                        {% endfor%}
+                  {% endif %}
             </div>
       </div>
 </section>

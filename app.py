@@ -178,44 +178,32 @@ def load_profile(username = None):
                   #otherwise, lock the user from making changes
             else:
                   userHasControl = 0
+                  
       #just in case
+      #end if userName in session
       else:
             userHasControl = 0
             
       count = 0
       #check that the user exists, if not, send the user a 404
       db = get_db()
-      sql = "SELECT * from GLB_User_Profiles WHERE Username = ?"
+      sql = """SELECT * from GLB_User_Profiles 
+                        WHERE Username = ?"""
+      
       for row in db.cursor().execute(sql, [username]):
-            #count how many rows there are
-            count =+ 1
-      #if theres a row, the user exists
-      if count == 1:
-            #get the user's basic profile elements like name, bio and country
-            user = username
-            userForename = row[2]
-            userSurname = row[1]
-            userBio = row[3]
-            userCountry = row[4]
-            
-            #now, grab the user's posts
-            #reset count
-            count = 0
-            sqlGetUsersPosts = "SELECT Image_Path FROM GLB_User_Posts WHERE Username = ?"
-            
-            for row in db.cursor().execute(sqlGetUsersPosts, [username]):
-                  count =+ 1
+            if row is not None:
+                  rowsForProfile = db.cursor().execute(sql, [username]).fetchone()
                   
-            if count > 0:
-                  imageCount = count
-                  userImage = row[0]
-                  return render_template("profile.html", userHasControl = userHasControl, user = user, userForename = userForename, userSurname = userSurname, userBio = userBio, userCountry = userCountry, userImage = userImage, imageCount = imageCount)
+                  #do the second query. grab the user's post data
+                  sqlGetUsersPosts = "SELECT * FROM GLB_User_Posts WHERE Post_Author = ?"
+                  rowsForPosts = db.cursor().execute(sqlGetUsersPosts, [username]).fetchall()
+                  
+                  return render_template("profile.html", userHasControl = userHasControl, rowsForPosts = rowsForPosts, rowsForProfile = rowsForProfile)
+      
             else:
+                  #end if row is not none
+                  #the user doesn't exist
                   return something_went_wrong()
-            
-      else:
-            #return an error
-            return session['userName']
       
       db.close()
      
@@ -437,10 +425,6 @@ def not_today(error):
 
 
 #for when SHTF
-def something_went_wrong():
-      return render_template("stuck.html")
-
-@app.route("/testt")
 def something_went_wrong():
       return render_template("stuck.html")
 
