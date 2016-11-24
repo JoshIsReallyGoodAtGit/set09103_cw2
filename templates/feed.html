@@ -34,7 +34,13 @@
 
 <section class="sectionFeed">
       {% if userCanPost == True %}
-            <a href="#0" data-remodal-target="addNewPost">
+             <a href="#0" data-remodal-target="addNewPost">
+                  <div class="fab-post">
+                        &plus;
+                  </div>
+            <a/>
+      {% else %}
+            <a href="#0"  id="pop"  onClick="displayPopover();" data-toggle="popover" data-placement="top" data-content="Woah there, cowboy. You need to be logged in to post.">
                   <div class="fab-post">
                         &plus;
                   </div>
@@ -93,7 +99,8 @@
             </div>
       </form>
 </div> <!--/remodal-->
-      
+
+<!--some markup for the dynamic post modal -->
 <div class="remodal" data-remodal-id="modal" id="post-modal">
       
 </div> <!--/remodal-->
@@ -108,9 +115,15 @@
       <script src="/static/js/remodal.min.js"></script>
       
       <script>
+            function displayPopover(){
+                  $('#pop').popover('toggle');
+            }
             function submitNewPost(){
                   $('#newPostForm').submit();
             }
+      </script>
+      {% if userCanPost == True %}
+            <script>
             function makeModal(profileImg, postAuth, postLoc, postImg){
                   //the following function dynamically creates the markup for a modal and then triggers it with the desired information (passed via parameters in the html)
                   //create the modals
@@ -121,5 +134,6 @@
                   inst.open();
             }
       </script>
+      {% endif %}
   </body>
 </html>
