@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Project Globe</title>
+
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!--Custom CSS -->
+    <link href="/static/css/styles.css" rel="stylesheet">
+      <!-- Font Awesome -->
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet">
+                <!--remodal-->
+        <link href="/static/css/remodal.css" rel="stylesheet">
+      <link href="/static/css/remodal-default-theme.css" rel="stylesheet">
+        <link href="/static/fonts/Montserrat-Regular.otf" rel="application/font-sfnt">
+         <link href="/static/fonts/Montserrat-Light.otf" rel="application/font-sfnt">
+  </head>
+<body>
+      
+      <div class="row"><!--NavBar-->
+            <div class="globeNavbar">
+                  <div class="col-xs-4">
+                        <a href="/" class="globeNavbarBrand text-left">Globe</a>
+                  </div><!--/col-xs-4 -->
+                  <div class="col-xs-4 text-center">
+                        <form class="inline-nav-form" action="/search/" method="POST">
+                              <i class="fa fa-search"></i> <input type="text" name="searchText" class="globe-navbar-form" placeholder="Search">
+                        </form>
+                  </div><!--/col-xs-4 -->
+                  <div class="col-xs-4 text-right">
+                        <a href="#accountsModal" class="globeNavbarItem text-right"><i class="fa fa-user"></i></a>
+                  </div><!--/col-xs-4 -->
+          </div><!--/navbar-->
+      </div><!--/row-->
+
+<section id="about-1">
+      <div class="container">
+            <div class="row">
+                  {% for row in rows %}
+                        {{ row['Username'] }}
+                  {% endfor %}
+      </div>
+</section>
+
+
+      
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+       <!--remodal JS --> 
+      <script src="/static/js/remodal.min.js"></script>
+  </body>
+</html>
