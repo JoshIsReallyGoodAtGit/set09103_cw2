@@ -146,7 +146,7 @@ a:hover .fab-post:hover{
 .fab-post{
       position: fixed;
       bottom: 0;
-      right: 0;
+      right: 10px;
       margin: 0 2% 2% 0;
       background: #fefefe;
       text-align: center;
@@ -207,6 +207,7 @@ a:hover .fab-post:hover{
 }
 .profile-img{
       margin-top: -100px;
+      width: 15%;
 }
 .profile-label{
       padding: .5%;
@@ -319,4 +320,11 @@ textarea{
       width: auto;
       min-width: inherit;
       max-height: 100%;
+}
+
+#pop{
+      position: fixed;
+      bottom: 0;
+      right: 10px;
+      margin: 0 4% 5% 0;
 }
