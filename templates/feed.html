@@ -74,31 +74,38 @@
            </div><!--/container-->
 </section>
 
+{% if userCanPost == True %}                   
       <div class="remodal" data-remodal-id="addNewPost">
-      <button data-remodal-action="close" class="remodal-close"></button>
-      <h2 class="text-center">Add New Post</h2>
-      <form class="modal-form" action="/post/add" method="POST" id="newPostForm" enctype="multipart/form-data">
-            <div class="input-group center-block">
+            <button data-remodal-action="close" class="remodal-close"></button>
+            <h2 class="text-center">Add New Post</h2>
+            <form class="modal-form" action="/post/add" method="POST" id="newPostForm" enctype="multipart/form-data">
+                  <div class="input-group center-block">
                   <p class="form-label">Add an image: </p>
                   <input type="file" class="fileButton" accept="image/jpeg" name="postPhoto" accept="img/jpeg">
-            </div>
-            <br />
-            <div class="input-group center-block">
-                  <p class="form-label">Where was this taken?</p>
-                  <input type="text" class="form-control" name="postLocation">
-            </div>
-            <br />
-            <div class="input-group center-block">
-                  <p class="form-label">Tell us more about it (optional)</p>
-                  <textarea class="form-control" name="postDesc"></textarea>
-            </div>
-            <br />
+                  </div>
+                  
+                  <br />
+                  
+                  <div class="input-group center-block">
+                        <p class="form-label">Where was this taken?</p>
+                        <input type="text" class="form-control" name="postLocation">
+                  </div>
+                  
+                  <br />
+            
+                  <div class="input-group center-block">
+                        <p class="form-label">Tell us more about it (optional)</p>
+                        <textarea class="form-control" name="postDesc"></textarea>
+                  </div>
+            
+                  <br />
              
-            <div class="p-t-1 m-t-1">
-                  <a href="#0" onClick="submitNewPost();" class="glbButton m-t-1">Post</a>
-            </div>
-      </form>
-</div> <!--/remodal-->
+                  <div class="p-t-1 m-t-1">
+                        <a href="#0" onClick="submitNewPost();" class="glbButton m-t-1">Post</a>
+                  </div>
+            </form>
+  </div> <!--/remodal-->
+{% endif %}
 
 <!--some markup for the dynamic post modal -->
 <div class="remodal" data-remodal-id="modal" id="post-modal">
@@ -121,9 +128,7 @@
             function submitNewPost(){
                   $('#newPostForm').submit();
             }
-      </script>
-      {% if userCanPost == True %}
-            <script>
+
             function makeModal(profileImg, postAuth, postLoc, postImg){
                   //the following function dynamically creates the markup for a modal and then triggers it with the desired information (passed via parameters in the html)
                   //create the modals
@@ -134,6 +139,5 @@
                   inst.open();
             }
       </script>
-      {% endif %}
   </body>
 </html>
