@@ -1,4 +1,30 @@
 /*CSS Rules for Globe Josh Tait 2016 */
+body{
+       font-family: 'Montserrat';
+      font-weight: 400;
+}
+
+h1, h2, h3, h4, h5, h6{
+      font-family: 'Montserrat';
+}
+
+/*navbar form */
+.globe-navbar-form{
+      border: 0;
+      background: #fff;
+      transition: all 300ms ease-in-out;
+      width: 15%;
+}
+.globe-navbar-form:focus{
+      border: 2px solid #09EF88;
+      width: 50%;
+      transition: all 300ms ease-in-out;
+      border-radius: 3px;
+}
+
+.fa-search, .globe-navbar-form:focus{
+      color: #09EF88;
+}
 .globeNavbar{
       padding: 2% 4% 3.5% 4%;
       background: #fff;
