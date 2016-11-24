@@ -413,11 +413,41 @@ def prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, 
             return not_today(403)
       
 
-#error handlers
+#search functionality
+@app.route("/search/", methods=["POST", "GET"])
+def get_search_results():
+      if request.method == "POST":
+            #grab the search text
+            searchQuery = 'jt'
+            
+            db = get_db()
+            #create the query
+            sql = """SELECT Username, Forename, Surname, Country 
+                            FROM GLB_User_Profiles 
+                            WHERE Username LIKE '%?%'"""
+            
+            rows = db.cursor().execute( """SELECT Username, Forename, Surname, Country 
+                                                                                    FROM GLB_User_Profiles 
+                                                                                    WHERE Username LIKE '%{term}%' """.format(term = searchQuery))
+                  
+            return render_template("search.html", rows = rows)
+            
+      else:
+            #dont abort the page, the user just wants to search on this page
+            rows = "0"
+            return render_template("search.html", rows = rows)
+            
       
+      
+      
+#error handlers      
 @app.errorhandler(404)
 def uhOh(error):
       return render_template("404.html")
+
+@app.errorhandler(405)
+def not_today(error):
+      return render_template("403.html")
 
 @app.errorhandler(403)
 def not_today(error):
