@@ -418,24 +418,38 @@ def prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, 
 def get_search_results():
       if request.method == "POST":
             #grab the search text
-            searchQuery = 'jt'
+            #add .get to the request.form function, otherwise it will break!
+            searchQuery = request.form.get("searchTxt")
             
             db = get_db()
+            counter = 0
             #create the query
             sql = """SELECT Username, Forename, Surname, Country 
-                            FROM GLB_User_Profiles 
-                            WHERE Username LIKE '%?%'"""
+                                                                                    FROM GLB_User_Profiles 
+                                                                                    WHERE Username LIKE '%{term}%' """.format(term = searchQuery)
             
             rows = db.cursor().execute( """SELECT Username, Forename, Surname, Country 
                                                                                     FROM GLB_User_Profiles 
                                                                                     WHERE Username LIKE '%{term}%' """.format(term = searchQuery))
+            
+            for row in db.cursor().execute(sql):
+                  counter = counter + 1
                   
-            return render_template("search.html", rows = rows)
+            if counter > 0:
+                  queryHasResults = True
+            
+            else:
+                  queryHasResults = False
+                  
+            userPosted = True
+            return render_template("search.html", rows = rows, queryHasResults = queryHasResults, userPosted = userPosted)
             
       else:
             #dont abort the page, the user just wants to search on this page
+            queryHasResults = False
+            userPosted = False
             rows = "0"
-            return render_template("search.html", rows = rows)
+            return render_template("search.html", rows = rows, queryHasResults = queryHasResults, userPosted = userPosted)
             
       
       

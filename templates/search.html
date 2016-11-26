@@ -37,12 +37,32 @@
           </div><!--/navbar-->
       </div><!--/row-->
 
-<section id="about-1">
+<section id="search">
       <div class="container">
-            <div class="row">
-                  {% for row in rows %}
-                        {{ row['Username'] }}
-                  {% endfor %}
+            <div class="row" id="search-row">
+                  <form action="" method="post" class="inline-form" id="search-form">
+                              <div class="input-group">
+                                          <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" name="searchTxt">
+                                          <span onClick="submitForm();" id="srch-icon" class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
+                              </div>
+                        </div>
+                  </form>
+                  <div class="search-results">
+                        {# check if user posted something #}
+                              {% if userPosted %}
+                                     <h1>Search Results</h1>
+                                    {# check if search yields results #}
+                                    {% if queryHasResults %}
+                                          {% for row in rows %}
+                                                <div class="search-result">
+                                                      {{ row['Username'] }}
+                                                </div>
+                                          {% endfor %}
+                                    {% else %}
+                                          <h3>No Search Results :(</h3>
+                                    {% endif %}
+                              {% endif %}
+                  </div>
       </div>
 </section>
 
@@ -55,5 +75,11 @@
     <script src="/static/js/bootstrap.min.js"></script>
        <!--remodal JS --> 
       <script src="/static/js/remodal.min.js"></script>
+      
+      <script>
+            function submitForm(){
+                  $('#search-form').submit();
+            }
+      </script>
   </body>
 </html>
