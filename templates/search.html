@@ -42,7 +42,7 @@
             <div class="row" id="search-row">
                   <form action="" method="post" class="inline-form" id="search-form">
                               <div class="input-group">
-                                          <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" name="searchTxt">
+                                          <input type="text" class="form-control" placeholder="Username" aria-describedby="basic-addon1" name="searchTxt" value="">
                                           <span onClick="submitForm();" id="srch-icon" class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>
                               </div>
                         </div>
@@ -55,7 +55,15 @@
                                     {% if queryHasResults %}
                                           {% for row in rows %}
                                                 <div class="search-result">
-                                                      {{ row['Username'] }}
+                                                      {% set profileImg = "/static/user-uploads/" ~ row['Username'] ~ "/profile/profile-pic.jpg" %}
+                                                      <img class="img-circle center-block block-center" src="{{ profileImg }}" width="150px" alt="profile of {{ row['Forename']}} {{ row['Surname']}}">
+                                                      <a href="/profile/{{row['Username']}}">
+                                                            {{ row['Forename']}} {{ row['Surname']}}
+                                                      </a>
+                                                      <br />
+                                                      {{ row['Country'] }}
+                                                      <br />
+                                                      Username: {{ row['Username'] }}
                                                 </div>
                                           {% endfor %}
                                     {% else %}

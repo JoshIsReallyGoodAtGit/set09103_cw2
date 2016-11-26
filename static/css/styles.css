@@ -22,7 +22,7 @@ h1, h2, h3, h4, h5, h6{
       border-radius: 3px;
 }
 
-.fa-search, .globe-navbar-form:focus{
+.search, .globe-navbar-form:focus{
       color: #09EF88;
 }
 .globeNavbar{
@@ -353,4 +353,29 @@ textarea{
       bottom: 0;
       right: 10px;
       margin: 0 4% 5% 0;
+}
+
+#longSearchBar{
+      width: 80%;
+      text-align: center;
+}
+
+#search-row{
+      margin: 2% 25% 2% 25%;
+}
+#srch-icon{
+      color: #fefefe !important;
+}
+#srch-icon:hover{
+      cursor: pointer;
+}
+
+.search-results{
+      text-align: center;
+}
+.search-result{
+      padding: 3%;
+      text-align: center;
+      border: 1px solid #ccc;
+      margin: 2% 35% 2% 35%;
 }
