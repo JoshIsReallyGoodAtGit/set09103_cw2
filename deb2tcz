@@ -1,0 +1,69 @@
+#!/bin/sh
+# Create tce/tcz from Debian package
+# Usage: $ deb2tcz packagename.deb packaganame.tcz
+
+if [ `/usr/bin/id -u` -ne 0 ]; then
+	echo "Please run as root".
+	exit 1
+fi
+
+HERE=`pwd`
+PKGDIR=/tmp/deb2tcz.1234
+PKG="$PKGDIR"/pkg
+FILE="$1"
+APPNAME="$2"
+INPUT=${FILE##*.}
+
+[ -d "$PKGDIR" ] || mkdir -p "$PKGDIR"
+
+make_tcz() {
+	
+	mkdir -p "$PKG"
+	ar p "$FILE" data.tar.gz > "$PKGDIR"/data.tar.gz
+	tar xzvf "$PKGDIR"/data.tar.gz -C "$PKG"
+	
+	[ -d "$PKG"/usr/share/doc ] && rm -r "$PKG"/usr/share/doc
+	[ -d "$PKG"/usr/share/man ] && rm -r "$PKG"/usr/share/man
+	[ -d "$PKG"/usr/share/menu ] && rm -r "$PKG"/usr/share/menu
+	cd "$PKG"
+	find . -type d -empty | xargs rmdir > /dev/null 2>&1
+	cd "$PKGDIR"
+	mksquashfs pkg "$HERE"/"$APPNAME" -noappend
+	cd "$HERE"
+	rm -r "$PKGDIR"
+}
+
+
+
+if [ ! -f /usr/local/tce.installed/findutils ]; then
+	echo "Install findutils.tcz before proceeding."
+	exit 1
+fi
+
+if [ ! `which mksquashfs` ]; then
+	echo "Install the squashfs-tools package before proceeding."
+	exit 1
+fi		
+
+
+
+[ -z "$APPNAME" ] && echo "You must specify an extension name." && exit 1
+
+[ -z "$1" ] && echo "You must specify a file."
+if [ ! "$INPUT" == "deb" ] ; then
+	echo "Only Debian packages work with this." 
+	exit 1
+fi
+EXT=${APPNAME##*.}
+if [ `echo "$EXT" | grep "tcz"` 2>/dev/null ]; then
+	make_tcz 
+else 	
+	echo "You need to specify a tcz  for the output file."
+	exit 1
+fi
+	
+if [ -f "$APPNAME" ]; then
+	echo "Success."
+else
+	echo "Something went wrong."
+fi
