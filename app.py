@@ -1,5 +1,6 @@
 from flask import Flask, g, session, render_template, flash, url_for, request, redirect
 from datetime import date
+from werkzeug.utils import secure_filename
 import string
 import random
 import sqlite3
@@ -225,6 +226,31 @@ def redirect_user():
             return  load_profile(username)
       else:
             return not_today(403)
+
+@app.route("/debug", methods=['POST', 'GET'])
+def lets_try_this_again():
+      #this function and route is only used to gently and neatly introduce Flasks approach to handing file uploads, and will be removed after dev
+      #specify the upload folder
+      uploadFolder = "/static/user-uploads/jt3/profile/"
+      #specify the safe/allowed file extensions
+      allowedExts = set(['jpg', 'jpeg', 'gif', 'png'])
+      #set the upload folder via app.config (i dont actually know what this does)
+      app.config['UPLOAD_FOLDER'] = uploadFolder
+
+      filename = "test.jpeg"
+      
+            
+      if allowed_file(filename, allowedExts):
+            return 'file okay'
+      else:
+            return "uh oh!"
+            
+def allowed_file(filename, allowedExts):
+      #check the user isn't doing anything fishy by checking the file extension
+      return "." in filename and filename.rsplit('.', 1)[1] in allowedExts
+
+      
+      
 
 #update profile actions
 @app.route("/profile/update/pic", methods=['POST', 'GET'])
