@@ -3,12 +3,16 @@ reference list
 header-bg: http://dreamlovewallpapers.com/wp-content/uploads/2015/02/Golden-Gate-Bridge-View-San-Francisco-Wallpaper.jpg
 box-shadow css: https://codepen.io/sdthornton/pen/wBZdXq
 eventlet (websockets): http://eventlet.net/
-random string generator for secret key: http://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
+random string generator for secret key and Post ID: http://stackoverflow.com/questions/2257441/random-string-generation-with-upper-case-letters-and-digits-in-python/23728630#23728630
 bill murray placeholder images: http://www.fillmurray.com/
 sam jackson ipsum: http://slipsum.com/
-lean modal: http://leanmodal.finelysliced.com.au/
+remodal: https://github.com/VodkaBears/Remodal/releases/tag/1.1.0
 no-gutter rows: http://julienmelissas.com/no-gutter-column-trick-for-bootstrap/
 file uploader: https://github.com/danielm/uploader/
 check ajax post: http://stackoverflow.com/questions/24687736/how-can-i-identify-requests-made-via-ajax-in-pythons-flask
 check if directory/file exists in python: http://stackabuse.com/python-check-if-a-file-or-directory-exists/
+design inspiration (colours, layout/interface): https://www.instagram.com/
+date-time function: https://docs.python.org/2/library/datetime.html
+passing data to the same page via post bug: https://www.reddit.com/r/flask/comments/4be1vg/help_with_immutablemultidict_object_is_not/
+
 Sx4Y5rHsKt

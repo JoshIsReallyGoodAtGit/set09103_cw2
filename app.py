@@ -1,5 +1,4 @@
 from flask import Flask, g, session, render_template, flash, url_for, request, redirect
-from wand.image import Image
 from datetime import date
 import string
 import random
@@ -88,7 +87,7 @@ def add_user(userFullName, userEmail, userPassword):
             db = get_db()
             
             #create a username for the user. Format: forename.surname.123x
-            userNameA = 
+            userNameA = 'test' 
             
             #manually assign a username for now
             db.cursor().execute("INSERT INTO GLB_Accounts ('Username', 'Email', 'Password') VALUES (?, ?, ?)", [userNameA, userEmail, userPassword])

@@ -5,21 +5,18 @@ Design the Database                                                  yep
 Design URL Heirarchies                                             yep
 Next, create the folders                                            yep
 Create a dev html file                                                 yep
-Create all the elements I'll need                           doin' it
-Use those elements to build the pages
-Build features
-    User Accounts
-        Register
-        Log In/Out
-        Forgot password?
-        Sessions
-        User Permissions
-    Password Hashing
-    Logging?
-    News Feed
-    Profile
-    Location Services?
+Create all the elements I'll need                           yep
+Use those elements to build the pages             yep
+Build features                                                                 yep
+    User Accounts       
+        Register                                                                     yep
+        Log In/Out                                                                yep
+        Forgot password?                                                  no
+        Sessions                                                                      yes
+        User Permissions                                                    yep
+    Logging?                                                                        no
+    News Feed                                                                    yep
+    Profile                                                                              yep
     Security
         Password Hashing
         Form Sanitisation
-        
