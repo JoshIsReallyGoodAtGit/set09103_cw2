@@ -227,25 +227,49 @@ def redirect_user():
       else:
             return not_today(403)
 
+@app.route("/deb")
+def return_form():
+      return render_template("test.html")
+
 @app.route("/debug", methods=['POST', 'GET'])
 def lets_try_this_again():
       #this function and route is only used to gently and neatly introduce Flasks approach to handing file uploads, and will be removed after dev
       #specify the upload folder
-      uploadFolder = "/static/user-uploads/jt3/profile/"
+      uploadFolder = "static/user-uploads/jt3/profile/"
       #specify the safe/allowed file extensions
       allowedExts = set(['jpg', 'jpeg', 'gif', 'png'])
-      #set the upload folder via app.config (i dont actually know what this does)
-      app.config['UPLOAD_FOLDER'] = uploadFolder
+     
 
-      filename = "test.jpeg"
-      
+      #now, grab the file
+      if request.method == "POST":
+            file = request.files['file']
+            filename = file.filename
             
-      if allowed_file(filename, allowedExts):
-            return 'file okay'
+      if file and allowed_file(file, filename, allowedExts):
+            #save the file
+            filename = secure_filename(filename)
+            
+            filePath = uploadFolder + filename
+            file.save(filePath)
+            
+            #now that we've got the file, lets rename it 
+            #to rename it, we need it's extension first, otherwise the image will corrupt
+            #i cant believe how fucking easy this is
+            base = os.path.basename(filePath)
+            ext = os.path.splitext(base)[1]            
+            
+            #now ive got the file extension, i can rename this file to whatever
+            #the file also overwrites an old one (if it exists), so no need to remove the old one
+            oldFile = filePath
+            newFile = "static/user-uploads/jt3/profile/" + "profile-pic" + str(ext)
+            print newFile
+            os.rename(filePath, newFile)
+            return 'done'
+       
       else:
             return "uh oh!"
             
-def allowed_file(filename, allowedExts):
+def allowed_file(file, filename, allowedExts):
       #check the user isn't doing anything fishy by checking the file extension
       return "." in filename and filename.rsplit('.', 1)[1] in allowedExts
 
