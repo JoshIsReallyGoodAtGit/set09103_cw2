@@ -233,41 +233,85 @@ def return_form():
 
 @app.route("/debug", methods=['POST', 'GET'])
 def lets_try_this_again():
+      #manually assign some variables for now
+      session['userName'] = "jt22"
+      folderType = "post"
+      fileType = "post-1"
+      
       #this function and route is only used to gently and neatly introduce Flasks approach to handing file uploads, and will be removed after dev
-      #specify the upload folder
-      uploadFolder = "static/user-uploads/jt3/profile/"
+      
+      #check if the users's logged in, we need to grab their folder
+      if 'userName' in session:
+            #check if they've got a folder
+            parentFolder = "static/user-uploads/" + session['userName'] + "/"
+            childFolder = parentFolder + folderType + "/"
+            
+            if parent_folder_exists(parentFolder):
+                  if child_folder_exists(childFolder):
+                        #now the folder exists, save the file 
+                        #icheck if they posted something
+                        if request.method == "POST":
+                              file = request.files['file']
+                              filename = file.filename
+                              return save_file(childFolder, file, filename, folderType, fileType)
+                  
+                  else:
+                        return "child not created"
+                  
+            else:
+                  return "parent not created"
+            
+      else:
+            return "not logged in"
+            
+def parent_folder_exists(parentFolder):
+      if os.path.isdir(parentFolder):
+            return True
+            
+      else:
+            #make the folder
+            os.mkdir(parentFolder)
+            return True
+            
+            
+def  child_folder_exists(childFolder):
+      if os.path.isdir(childFolder):
+            return True
+            
+      else:
+            #make the folder
+            os.mkdir(childFolder)
+            return True
+                  
+            
+def save_file(childFolder, file, filename, folderType, fileType):
       #specify the safe/allowed file extensions
       allowedExts = set(['jpg', 'jpeg', 'gif', 'png'])
-     
-
-      #now, grab the file
-      if request.method == "POST":
-            file = request.files['file']
-            filename = file.filename
             
       if file and allowed_file(file, filename, allowedExts):
             #save the file
             filename = secure_filename(filename)
             
-            filePath = uploadFolder + filename
+            filePath = childFolder + filename
             file.save(filePath)
             
             #now that we've got the file, lets rename it 
             #to rename it, we need it's extension first, otherwise the image will corrupt
-            #i cant believe how fucking easy this is
             base = os.path.basename(filePath)
             ext = os.path.splitext(base)[1]            
-            
+                  
             #now ive got the file extension, i can rename this file to whatever
             #the file also overwrites an old one (if it exists), so no need to remove the old one
             oldFile = filePath
-            newFile = "static/user-uploads/jt3/profile/" + "profile-pic" + str(ext)
+            newFile = "static/user-uploads/" + session['userName'] + "/" + folderType + "/" +  fileType +"-pic" + str(ext)
             print newFile
+            
             os.rename(filePath, newFile)
+            
             return 'done'
-       
+            
       else:
-            return "uh oh!"
+            return not_today(403)
             
 def allowed_file(file, filename, allowedExts):
       #check the user isn't doing anything fishy by checking the file extension
