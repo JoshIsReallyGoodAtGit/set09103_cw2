@@ -14,5 +14,5 @@ check if directory/file exists in python: http://stackabuse.com/python-check-if-
 design inspiration (colours, layout/interface): https://www.instagram.com/
 date-time function: https://docs.python.org/2/library/datetime.html
 passing data to the same page via post bug: https://www.reddit.com/r/flask/comments/4be1vg/help_with_immutablemultidict_object_is_not/
-
+grabbing a file extension from a saved file within Flask: stackoverflow.com/questions/678236/howa-to-get-the-filename-without-the-extension-from-a-path-in-python
 Sx4Y5rHsKt

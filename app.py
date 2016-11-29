@@ -36,7 +36,7 @@ def close_db_connection(exception):
 @app.route("/")
 def determine_user_path():
       if 'userName' in session:
-           return get_feed()
+           return url_for("get_feed")
       else:
             return go_to_index()
 
@@ -113,6 +113,7 @@ def start_sesh(userName):
       session['userName'] = userName
       #redirect the user
       return determine_user_path()
+
 
 @app.route("/login", methods=['POST'])
 def log_in():
@@ -219,7 +220,7 @@ def load_profile(username = None):
      
 
 @app.route("/profile/")
-def redirect_user():
+def load_profile_if_logged_in():
       #check if the user is logged in, if they are, send them to their profile, if not, send them to the index page
       if 'userName' in session:
             username = session['userName']
@@ -245,7 +246,7 @@ def get_users_profile_pic():
                         
                         #save the file first, then once thats done, add the post to the database, then reload the feed
                         if setup_folders(file, filename, folderType, fileType):
-                            return 'done'
+                            return load_profile_if_logged_in()
                   
                   else:
                         return something_went_wrong()

@@ -235,6 +235,10 @@ a:hover .fab-post:hover{
       margin-top: -100px;
       width: 15%;
 }
+.profile-img img{
+      width: 150px;
+      height: 150px;
+}
 .profile-label{
       padding: .5%;
       text-align: center;
