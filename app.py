@@ -36,7 +36,7 @@ def close_db_connection(exception):
 @app.route("/")
 def determine_user_path():
       if 'userName' in session:
-           return url_for("get_feed")
+           return get_feed()
       else:
             return go_to_index()
 
@@ -121,7 +121,7 @@ def start_sesh(userName):
       return determine_user_path()
 
 
-@app.route("/login", methods=['POST'])
+@app.route("/login", methods=['POST', 'GET'])
 def log_in():
       #retrieve the form
       if request.method == 'POST':
@@ -136,7 +136,7 @@ def log_in():
                   return auth_user_login(userName, userPassword)
       else:
             #the user is accessing this via GET, which they probably shouldn't be able to do, so send 'em away
-            return redirect('/')
+            return 'NAH'
       
 
       
@@ -149,18 +149,17 @@ def auth_user_login(userName, userPassword):
             counter =+ 1
       
       if counter > 0:
-            userActualPass = row
+            userActualPass = row[0]
       else:
             return something_went_wrong()
       
-      #I'm really not proud of this, but it works
-      check = "(u'" + userPassword + "',)"
       
-      if str(userActualPass) == str(check):
+      if str(userActualPass) == str(userPassword):
             #if the passwords match, then the user is who they say they are, log them in 
             return start_sesh(userName)
       else:
             #the passwords dont match, so flash the user
+            print str(userActualPass) + str(check)
             return 'incorrect password'
       
       db.close()
@@ -369,7 +368,7 @@ def update_user_country():
                                                                    SET Country = ?
                                                                    WHERE Username = ?""", (newLocation, username))
                   db.commit()
-                  return 'done'
+                  return load_profile_if_logged_in()
       
             else:
                   return not_today(403)
@@ -392,14 +391,25 @@ def update_user_bio():
                                                                    SET Bio = ?
                                                                    WHERE Username = ?""", (newBio, username))
                   db.commit()
-                  return 'done'
+                  return load_profile_if_logged_in()
       
             else:
                   return not_today(403)
             
       else:
-            return not_today(504)
+            return not_today(403)
 
+@app.route("/account") 
+def display_options_to_user():
+      #this function displays different options to the user based in whether or not they're logged in
+      if 'userName' in session:
+            #show a 'logout' and 'view profile'
+            return render_template("account.html")
+      
+      else:
+            #if not, show a log in form
+            return render_template("login.html")
+      
 @app.route("/search/", methods=["POST", "GET"])
 def get_search_results():
       if request.method == "POST":
