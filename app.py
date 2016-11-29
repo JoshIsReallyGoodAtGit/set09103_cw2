@@ -103,7 +103,7 @@ def add_user(userForename, userSurname, userEmail, userPassword):
                         userBio = "Say something about yourself."
                         userCountry  = "Earth"
                         #now the user has created an account, they will be auto-logged in
-                        #return start_sesh(userName)
+
                         #now thats done, we need to add the user's personal profile
                         db.cursor().execute("INSERT INTO GLB_User_Profiles ('Username', 'Surname', 'Forename', 'Bio', 'Country')  VALUES (?, ?, ?, ?, ?)", [userNameA, userSurname, userForename, userBio, userCountry])
                         db.commit()
@@ -352,6 +352,53 @@ def add_user_post(postID, postDesc, postLocation):
       #do the next function, in this case, return the user to their feed
       return True
 
+
+
+#update profile location and bio
+@app.route("/profile/update/loc", methods=['POST'])
+def update_user_country():
+      if 'userName' in session:
+            if request.method == "POST":
+                  #grab the file
+                  newLocation = request.form['userCountry']
+                  #write the query
+                  db = get_db()
+                  username = session['userName']
+            
+                  db.cursor().execute("""UPDATE GLB_User_Profiles 
+                                                                   SET Country = ?
+                                                                   WHERE Username = ?""", (newLocation, username))
+                  db.commit()
+                  return 'done'
+      
+            else:
+                  return not_today(403)
+            
+      else:
+            return not_today(504)
+      
+#update profile location and bio
+@app.route("/profile/update/bio", methods=['POST'])
+def update_user_bio():
+      if 'userName' in session:
+            if request.method == "POST":
+                  #grab the file
+                  newBio = request.form['userBio']
+                  #write the query
+                  db = get_db()
+                  username = session['userName']
+            
+                  db.cursor().execute("""UPDATE GLB_User_Profiles 
+                                                                   SET Bio = ?
+                                                                   WHERE Username = ?""", (newBio, username))
+                  db.commit()
+                  return 'done'
+      
+            else:
+                  return not_today(403)
+            
+      else:
+            return not_today(504)
 
 @app.route("/search/", methods=["POST", "GET"])
 def get_search_results():

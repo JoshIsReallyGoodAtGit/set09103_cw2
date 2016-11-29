@@ -2,6 +2,7 @@
       {% set userName = rowsForProfile['Forename']   ~ " " ~ rowsForProfile['Surname']  %}
       {% set user = rowsForProfile['Username'] %}
       {% set userBio = rowsForProfile['Bio'] %}
+      {% set userLoc = rowsForProfile['Country'] %}
       {{ userHasPosts }}
 
 <!DOCTYPE html>
@@ -60,12 +61,35 @@
       </div>
       {% endif %}
       <h1 class="profile-name">{{ userName }}</h1>
+      {% if userHasControl == 1%}
+            <div class="container">
+                  <div class="row">
+                        <div class="col-xs-4 col-xs-offset-4"> 
+                              <form class="profile-loc" method="post" action="/profile/update/loc">
+                                    <input type="text" class="form-control" value="{{ userLoc }}" name="userCountry">
+                                    <input type="submit" class="glbButton" value="Update">
+                              </form>
+                        </div>
+                  </div>
+            </div>
+     {% else %}
+            <h3 class="profile-loc"><i class="fa fa-map-marker"></i> {{ userLoc }}</h3>
+      {% endif %}
 </section>
 
 <section id="profile-bio" class="m-t-1">
       <div class="container">
             <h2 class="profile-heading">About</h2>
-            <p  class="profile-bio-text">{{ userBio }}</p>
+            {% if userHasControl == 1%}
+                  <form class="profile-bio-update" action="/profile/update/bio" method="post">
+                         <p>Edit Your Bio</p>
+                        <textarea cols="98" class="profile-bio" name="userBio">{{ userBio }}</textarea>
+                        <br />
+                        <input type="submit" class="glbButton" value="Update">
+                  </form>
+            {% else %}
+                  <p  class="profile-bio-text">{{ userBio }}</p>
+            {% endif %}
       </div>
 </section>
 
