@@ -176,7 +176,7 @@ def close_sesh():
 @app.route("/hard-login")
 def debug_log_in():
       #used to force log in until the user accounts are built
-      session['userName'] = 'jt4'
+      session['userName'] = 'jt3'
       return session['userName']
 
 @app.route("/profile/<username>")
@@ -226,118 +226,26 @@ def redirect_user():
             return  load_profile(username)
       else:
             return not_today(403)
-
-@app.route("/deb")
-def return_form():
-      return render_template("test.html")
-
-@app.route("/debug", methods=['POST', 'GET'])
-def lets_try_this_again():
-      #manually assign some variables for now
-      session['userName'] = "jt22"
-      folderType = "post"
-      fileType = "post-1"
-      
-      #this function and route is only used to gently and neatly introduce Flasks approach to handing file uploads, and will be removed after dev
-      
-      #check if the users's logged in, we need to grab their folder
-      if 'userName' in session:
-            #check if they've got a folder
-            parentFolder = "static/user-uploads/" + session['userName'] + "/"
-            childFolder = parentFolder + folderType + "/"
-            
-            if parent_folder_exists(parentFolder):
-                  if child_folder_exists(childFolder):
-                        #now the folder exists, save the file 
-                        #icheck if they posted something
-                        if request.method == "POST":
-                              file = request.files['file']
-                              filename = file.filename
-                              return save_file(childFolder, file, filename, folderType, fileType)
-                  
-                  else:
-                        return "child not created"
-                  
-            else:
-                  return "parent not created"
-            
-      else:
-            return "not logged in"
-            
-def parent_folder_exists(parentFolder):
-      if os.path.isdir(parentFolder):
-            return True
-            
-      else:
-            #make the folder
-            os.mkdir(parentFolder)
-            return True
-            
-            
-def  child_folder_exists(childFolder):
-      if os.path.isdir(childFolder):
-            return True
-            
-      else:
-            #make the folder
-            os.mkdir(childFolder)
-            return True
-                  
-            
-def save_file(childFolder, file, filename, folderType, fileType):
-      #specify the safe/allowed file extensions
-      allowedExts = set(['jpg', 'jpeg', 'gif', 'png'])
-            
-      if file and allowed_file(file, filename, allowedExts):
-            #save the file
-            filename = secure_filename(filename)
-            
-            filePath = childFolder + filename
-            file.save(filePath)
-            
-            #now that we've got the file, lets rename it 
-            #to rename it, we need it's extension first, otherwise the image will corrupt
-            base = os.path.basename(filePath)
-            ext = os.path.splitext(base)[1]            
-                  
-            #now ive got the file extension, i can rename this file to whatever
-            #the file also overwrites an old one (if it exists), so no need to remove the old one
-            oldFile = filePath
-            newFile = "static/user-uploads/" + session['userName'] + "/" + folderType + "/" +  fileType +"-pic" + str(ext)
-            print newFile
-            
-            os.rename(filePath, newFile)
-            
-            return 'done'
-            
-      else:
-            return not_today(403)
-            
-def allowed_file(file, filename, allowedExts):
-      #check the user isn't doing anything fishy by checking the file extension
-      return "." in filename and filename.rsplit('.', 1)[1] in allowedExts
-
-      
       
 
 #update profile actions
 @app.route("/profile/update/pic", methods=['POST', 'GET'])
 def get_users_profile_pic():
-      if ['userName'] in session:
+      if 'userName' in session:
             #check if the user posted something first
             if request.method == "POST":
-                  userFile = request.files['updateProfilePic']
+                  file = request.files['updateProfilePic']
                   #grab the filename, too
-                  userFileName = userFile.filename
+                  filename = file.filename
                   
-                  #check if userFile is empty
-                  if userFile is not None:
-                        folder = "static/user-uploads/" + session['userName'] + "/profile/"
-                        fileType = 'profile-pic.jpg'
-                        return prep_user_image(folder, fileType, userFile, userFileName)  
-                  
-                        #now the picture has been updated, reload the page
-                        return redirect_user()
+                   #check if userFile is empty
+                  if file is not None:
+                        folderType = "profile"
+                        fileType = 'profile-pic'
+                        
+                        #save the file first, then once thats done, add the post to the database, then reload the feed
+                        if setup_folders(file, filename, folderType, fileType):
+                            return 'done'
                   
                   else:
                         return something_went_wrong()
@@ -350,19 +258,23 @@ def get_users_profile_pic():
 
 @app.route("/profile/update/bg", methods=['POST', 'GET'])
 def get_cover_photo():
+      session['userName'] = "jt3"
       #check if the user is still logged in first
-      if ['userName'] in session:
+      if 'userName' in session:
             #check if the user posted something first
             if request.method == "POST":
-                  userFile = request.files['coverPhoto']
+                  file = request.files['coverPhoto']
                   #grab the file name, too
-                  userFileName = userFile.filename
+                  filename = file.filename
             
                   #check if userFile is empty
-                  if userFile is not None:
-                        folder = "static/user-uploads/" + session['userName'] + "/profile/"
-                        fileType = 'cover-pic.jpg'
-                        return prep_user_image(folder, fileType, userFile, userFileName)
+                  if file is not None:
+                        folderType = "profile"
+                        fileType = 'cover-pic'
+                        
+                        #save the file first, then once thats done, add the post to the database, then reload the feed
+                        if setup_folders(file, filename, fileType, folderType):
+                            return 'done'
                         
                   else:
                         return something_went_wrong()
@@ -378,31 +290,31 @@ def get_cover_photo():
 def get_post():
       #check the user's still logged in 
       #hard code it for dev
-      session['userName'] = "jt4"
       if 'userName' in session:
             #check if the user posted something
             if request.method == "POST":
                   postDesc = request.form['postDesc']
                   postLocation = request.form['postLocation']
-                  userFile = request.files['postPhoto']
+                  file = request.files['postPhoto']
                   #grab the filename too
-                  userFileName = userFile.filename
+                  filename = file.filename
                   
                   #check if userFile is empty
-                  if userFile is not None:
-                        folder = "static/user-uploads/" + session['userName'] + "/posts/"
-                        fileType = 'post'
+                  if file is not None:
+                        folderType = 'posts'
                         #before we prep the image, we need to create a PostID used in the image name and in the database
                         #PostID = username-random string
                         postID = str(session['userName']) +  "-" + ''.join(random.SystemRandom().choice(string.ascii_lowercase + string.digits) for _ in range(6)) 
                         
                         
                         #prep the image and save it
-                        #need to pass the parameters for writing the sql query, but they wont be used in this function - 
-                        #they're the last two parameters.
-                        return prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, postLocation)
+                        fileType = postID 
                         
-                        
+                        #save the file first, then once thats done, add the post to the database, then reload the feed
+                        if setup_folders(file, filename, fileType, folderType):
+                              if add_user_post(postID, postDesc, postLocation):
+                                    return get_feed()
+                              
                   else:
                         return something_went_wrong()
             
@@ -411,8 +323,9 @@ def get_post():
             
       else:
             return not_today(403)
-      
-def add_user_post(postID, postDesc, postLocation, newFile):
+            
+            
+def add_user_post(postID, postDesc, postLocation):
       db = get_db()
       
       #check if postDesc is empty
@@ -421,16 +334,6 @@ def add_user_post(postID, postDesc, postLocation, newFile):
             
       #grab the username
       postAuthor = session['userName']
-      #grab the user's full name
-      sql  = "SELECT Forename, Surname FROM GLB_User_Profiles WHERE Username = ?"
-      counter = 0
-      for row in db.cursor().execute(sql, [postAuthor]):
-            counter =+ 1
-      
-      if counter > 0:
-            postAuthor = str(row[0]) + " " + str(row[1])
-      else:
-           return something_went_wrong()
       
       #grab todays date 
       todaysDate = date.today()
@@ -439,84 +342,10 @@ def add_user_post(postID, postDesc, postLocation, newFile):
       db.cursor().execute("INSERT INTO GLB_User_Posts ('Post_ID', 'Post_Author','Date_Posted', 'Post_Desc','Post_Loc') VALUES (?, ?, ?, ?, ?)", [postID, postAuthor, todaysDate, postDesc, postLocation])
       db.commit()
       
-      #the post has been added, reload the feed
-      return render_template('feed.html')
+      #do the next function, in this case, return the user to their feed
+      return True
 
 
-def prep_user_image(folder, fileType, userFile, userFileName, postID, postDesc, postLocation):
-      #last to parameters not used in this function, only here to I can call the next function in the sequence
-      
-      #check if the user is still logged in first
-      if 'userName' in session:
-            #check if the folder exists
-            if os.path.isdir(folder):
-                  #if it does, check if the actual file exists
-                  for thisFile in os.listdir(folder):
-                        if thisFile == fileType:
-                              fileToRemove = folder + fileType
-                              os.remove(fileToRemove)
-                              
-                  #save the new image with it's dodgy name and extension
-                  saveFilePath = folder + userFileName
-                  userFile.save(saveFilePath)
-                  
-                  #this next bit basically makes a 'save as' operation, without overwrite, so clone the image and save it as a jpeg, then delete the original png or whatever. 
-                  #three hours later, this now works
-                  with Image(filename=saveFilePath) as img:
-                        img.format = "jpg"
-                        #now, resize the image so it looks okay, a cover photo should at least be 1000 x 200, a profile pic at least 100 x 100
-                        if fileType == "cover-pic.jpg":
-                              img.crop(10, 20, width=1920, height=500)
-                              
-                        elif  fileType == "profile-pic.jpg":
-                              img.resize(200, 200, 'undefined')
-                              
-                        elif fileType == "post":
-                              #do stuff
-                              print 'post'
-                         
-                        #set the path and filename for the new file, fileType is determined in the previous function (its either a cover photo or a profile pic)
-                        
-                        #this added bit prevents the app from breaking if the picture uploaded is for a post
-                        if fileType == "post":
-                              #if it's for a post, then alter the name of the image to post_<postID>.jpg
-                              newFile = folder + "post_" + postID + ".jpg"
-                              
-                        else:
-                              #otherwise, just carry on as normal
-                              newFile = folder + fileType
-                        
-                        #before we save the file, double-check that there's no file called 'profile-picture.jpg'. The chances of this are very small, but just to be safe
-                        for thisFile in os.listdir(folder):
-                              if thisFile == fileType:
-                                    fileToRemove = newFile
-                                    os.remove(fileToRemove)
-                        
-                        #good to save now
-                        img.save(filename=newFile)
-                        
-                  #now remove the old file (the dodgy one)
-                  os.remove(saveFilePath)
-                        
-                  #now list the directory, to check that it's worked
-                  for eachFile in os.listdir(folder):
-                       print eachFile
-                  
-                  #determine where to send the user now
-                  if fileType == "post":
-                        #now the image has been saved, update the database
-                        return add_user_post(postID, postDesc, postLocation, newFile)
-                              
-                  else:
-                        #just a profile action
-                        #now the picture has been updated, reload the page
-                        return redirect_user()
-                  
-      else:
-            return not_today(403)
-      
-
-#search functionality
 @app.route("/search/", methods=["POST", "GET"])
 def get_search_results():
       if request.method == "POST":
@@ -553,6 +382,91 @@ def get_search_results():
             rows = "0"
             return render_template("search.html", rows = rows, queryHasResults = queryHasResults, userPosted = userPosted)
             
+            
+            
+#image handling
+def parent_folder_exists(parentFolder):
+      if os.path.isdir(parentFolder):
+            return True
+            
+      else:
+            #make the folder
+            os.mkdir(parentFolder)
+            return True
+            
+            
+def  child_folder_exists(childFolder):
+      if os.path.isdir(childFolder):
+            return True
+            
+      else:
+            #make the folder
+            os.mkdir(childFolder)
+            return True
+      
+      
+def setup_folders(file, filename, folderType, fileType):
+#check if they've got a folder
+      parentFolder = "static/user-uploads/" + session['userName'] + "/"
+      childFolder = parentFolder + folderType + "/"
+            
+      if parent_folder_exists(parentFolder):
+            if child_folder_exists(childFolder):
+                  #now the folder exists, save the file
+                  if save_file(childFolder, file, filename, fileType):
+                        return True
+                  
+            else:
+                  return "child not created"
+                  
+      else:
+            return "parent not created"
+      
+      
+def allowed_file(file, filename, allowedExts, childFolder, fileType):
+      #check the user isn't doing anything fishy by checking the file extension
+      return "." in filename and filename.rsplit('.', 1)[1] in allowedExts
+
+
+def save_file(childFolder, file, filename, fileType):
+      #specify the safe/allowed file extensions
+      allowedExts = set(['jpg', 'jpeg', 'gif', 'png'])
+            
+      if file and allowed_file(file, filename, allowedExts, childFolder, fileType):
+                                    #path/            somepic-jpg
+            fileToSave = childFolder + filename
+            #fileToSave = secure_filename(fileToSave)
+            
+            #print str(fileToSave)
+            file.save(fileToSave)
+            
+            #now we need to delete any old files with the same name, to prevent storing two files wih the same name but different extension, which one should the user see?
+            
+            for file in os.listdir(childFolder):
+                  #to check if the file matches, need to grab the filename
+                  path = childFolder + file
+                  base = os.path.basename(path)
+                  thisFileName = os.path.splitext(base)[0]
+                        #profile-pic         profile-pic
+                  if thisFileName == fileType:
+                        os.remove(path)
+                        print 'deleted: ' + str(path)
+                  else:
+                        print 'not found'
+                        
+            #now thats done, we can rename the file
+            #grab the extension of the old name of the file
+            base = os.path.basename(fileToSave)
+            ext = os.path.splitext(base)[1]
+            
+            fileRename = childFolder + fileType + ext
+            os.rename(fileToSave, fileRename)            
+            
+                        
+            return True
+            
+      else:
+            return not_today(403)
       
       
       
