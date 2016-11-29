@@ -68,41 +68,47 @@ def register_account():
       #if user post'd something
       if request.method == 'POST':
             #grab the user's details
-            userFullName = request.form['user-full-name']
+            userForename = request.form['user-forename']
+            userSurname = request.form['user-surname']
             userEmail = request.form['email']
             userPassword = request.form['password']
             
             #check that none of the entries are blank, if they are notify the user
-            if userFullName == "" or userEmail == "" or userPassword == "":
+            if userForename == "" or userSurname == "" or userEmail == "" or userPassword == "":
                   #user didn't post anything we can use, flash them (not literally!!)
                   return 'empty!'
             else:
                   #now would be a good time to sanitise the input...
-                  return add_user(userFullName, userEmail, userPassword)
+                  return add_user(userForename, userSurname, userEmail, userPassword)
       else:
             #the user is accessing this via GET, which they probably shouldn't be able to do, so send 'em away
             return redirect('/')
 
-def add_user(userFullName, userEmail, userPassword):
+def add_user(userForename, userSurname, userEmail, userPassword):
       #add data to the record
             db = get_db()
             
             #create a username for the user. Format: forename.surname.123x
-            userNameA = 'test' 
+            userNameA = userForename + "." + userSurname + str(random.randint(1,10))
+            print str(userNameA)
             
             #manually assign a username for now
             db.cursor().execute("INSERT INTO GLB_Accounts ('Username', 'Email', 'Password') VALUES (?, ?, ?)", [userNameA, userEmail, userPassword])
             db.commit()
+            
             #check the user has been added
-            sql="SELECT Username FROM GLB_Accounts WHERE Username = 'jt3'"
-            for row in db.cursor().execute(sql):
+            sql="SELECT Username FROM GLB_Accounts WHERE Username = ?"
+            for row in db.cursor().execute(sql, [userNameA]):
                   if row is not None:
+                        userBio = "Say something about yourself."
+                        userCountry  = "Earth"
                         #now the user has created an account, they will be auto-logged in
                         #return start_sesh(userName)
                         #now thats done, we need to add the user's personal profile
                         db.cursor().execute("INSERT INTO GLB_User_Profiles ('Username', 'Surname', 'Forename', 'Bio', 'Country')  VALUES (?, ?, ?, ?, ?)", [userNameA, userSurname, userForename, userBio, userCountry])
                         db.commit()
-                        return 'new user added!'
+
+                        return start_sesh(userNameA)
                   else:
                         return something_went_wrong()
             db.close()
