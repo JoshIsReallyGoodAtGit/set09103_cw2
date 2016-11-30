@@ -51,6 +51,16 @@
       {% endif %}
                   
       <div class="container">
+            {% with messages =get_flashed_messages() %}
+                  {% if messages %}
+                        {% for message in messages %}
+                              <div class="flash-msg success flash-feed">
+                                    <p class="error-msg">{{ message }}</p>
+                              </div>
+                        {% endfor %}
+                  {% endif %}
+            {% endwith %}
+            
             {% for row in rows %}
             {# create the variables that will be used in the paths for the user's images #}
             {% set urlImgPath = "/static/user-uploads/" + row['Post_Author'] + "/posts/" + row['Post_ID']  + "-pic.jpg" %}

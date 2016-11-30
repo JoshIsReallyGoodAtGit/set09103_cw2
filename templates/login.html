@@ -35,6 +35,15 @@
                   <div class="card">
                         <form class="card-form" method='post' action="/login">
                               <h1>Log In</h1>
+                              {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                          {% for message in messages %}
+                                                <div class="flash-msg danger">
+                                                      <p class="error-msg">{{message}}</p>
+                                                </div>
+                                          {% endfor %}
+                                    {% endif %}
+                              {% endwith %}
                               <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
                                     <input type="text" class="form-control input-lg" placeholder="Email" name="login-email">

@@ -157,18 +157,19 @@ def auth_user_login(userName, userPassword):
       
       if counter > 0:
             userActualPass = row[0]
+            if str(userActualPass) == str(userPassword):
+                  #if the passwords match, then the user is who they say they are, log them in
+                  return start_sesh(userName)
+            else:
+                  #the passwords dont match, so flash the user
+                  flash('Incorrect Email Or Password :(')
+                  return redirect(url_for("log_in"))
       else:
-            return something_went_wrong()
-      
-      
-      if str(userActualPass) == str(userPassword):
-            #if the passwords match, then the user is who they say they are, log them in 
-            return start_sesh(userName)
-      else:
-            #the passwords dont match, so flash the user
+           #the email address doesnt exist in the database, so flash the user
             flash('Incorrect Email Or Password :(')
             return redirect(url_for("log_in"))
       
+     
       db.close()
 
       
@@ -176,7 +177,8 @@ def start_sesh(userName):
       #start the session
       session['userName'] = userName
       #redirect the user
-      return determine_user_path()
+      flash("Logged in!", 'success')
+      return redirect(url_for("get_feed"))
 
 
       
@@ -202,7 +204,8 @@ def debug_log_in():
       return session['userName']
 
 @app.route("/profile/<username>")
-def load_profile(username = None):
+def load_profile(username):
+
       if 'userName' in session:
             #if the username entered in the URL is the same as the user that's logged in, the user has control
             if username == str(session['userName']):
@@ -235,7 +238,7 @@ def load_profile(username = None):
             else:
                   #end if row is not none
                   #the user doesn't exist
-                  return something_went_wrong()
+                  return something_went_wrong(403)
       
       db.close()
      
