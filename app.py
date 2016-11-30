@@ -132,7 +132,7 @@ def display_options_to_user():
 def log_in():
       #retrieve the form
       if request.method == 'POST':
-            userName = request.form['login-email']
+            userName = request.form['login-username']
             userPassword = request.form['login-password']
             #check that none of the entries are blank, if they are notify the user
             if userName == "" or userPassword == "":
@@ -151,7 +151,7 @@ def log_in():
 def auth_user_login(userName, userPassword):
       #check the user exists first
       db = get_db()
-      sql = "SELECT Password FROM GLB_Accounts where Email = ?"
+      sql = "SELECT Password FROM GLB_Accounts where Username = ?"
       counter = 0
       for row in db.cursor().execute(sql, [userName]):
             counter =+ 1
