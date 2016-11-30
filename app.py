@@ -102,12 +102,13 @@ def add_user(userForename, userSurname, userEmail, userPassword):
                   if row is not None:
                         userBio = "Say something about yourself."
                         userCountry  = "Earth"
-                        #now the user has created an account, they will be auto-logged in
+                        
 
                         #now thats done, we need to add the user's personal profile
                         db.cursor().execute("INSERT INTO GLB_User_Profiles ('Username', 'Surname', 'Forename', 'Bio', 'Country')  VALUES (?, ?, ?, ?, ?)", [userNameA, userSurname, userForename, userBio, userCountry])
                         db.commit()
-
+                        
+                        #now the user has created an account, they will be auto-logged in
                         return start_sesh(userNameA)
                   else:
                         return something_went_wrong()
@@ -333,7 +334,7 @@ def get_post():
                         
                         
                         #prep the image and save it
-                        fileType = postID 
+                        fileType = postID
                         
                         #save the file first, then once thats done, add the post to the database, then reload the feed
                         if setup_folders(file, filename, fileType, folderType):
@@ -477,7 +478,9 @@ def  child_folder_exists(childFolder):
             return True
       
       
-def setup_folders(file, filename, folderType, fileType):
+
+      
+def setup_folders(file, filename, fileType, folderType):
 #check if they've got a folder
       parentFolder = "static/user-uploads/" + session['userName'] + "/"
       childFolder = parentFolder + folderType + "/"
