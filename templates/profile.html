@@ -102,7 +102,7 @@
                    {% if rowsForPosts %}
                         {% for post in rowsForPosts %}
                               {# images for each post are set dynamically #}
-                              {% set userImagePath = "/static/user-uploads/" ~ user ~ "/posts/" ~ post['Post_ID'] ~ "-pic.jpg" %}
+                              {% set userImagePath = "/static/user-uploads/" ~ user ~ "/posts/" ~ post['Post_ID'] ~ ".jpg" %}
                               <div class="col-xs-6 col-sm-4">
                                     <img class="profile-img-tile" src="{{ userImagePath }}">
                               </div>
