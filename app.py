@@ -197,12 +197,7 @@ def close_sesh():
       else:
             #return them to /
             return determine_user_path()
-      
-@app.route("/hard-login")
-def debug_log_in():
-      #used to force log in until the user accounts are built
-      session['userName'] = 'jt3'
-      return session['userName']
+
 
 @app.route("/profile/<username>")
 def load_profile(username):
@@ -284,7 +279,6 @@ def get_users_profile_pic():
 
 @app.route("/profile/update/bg", methods=['POST', 'GET'])
 def get_cover_photo():
-      session['userName'] = "jt3"
       #check if the user is still logged in first
       if 'userName' in session:
             #check if the user posted something first
@@ -562,8 +556,6 @@ def not_today(error):
 #for when SHTF
 def something_went_wrong():
       return render_template("stuck.html")
-
-
 
 
 if __name__ == "__main__":
