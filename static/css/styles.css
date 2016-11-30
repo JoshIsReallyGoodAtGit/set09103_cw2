@@ -383,3 +383,62 @@ textarea{
       border: 1px solid #ccc;
       margin: 2% 35% 2% 35%;
 }
+
+.profile-bio-update{
+      margin: 2% 0 0 5%;
+}
+.profile-bio-update .glbButton{
+      margin: 2% 0 0 5%;
+      font-size: .8em;
+      padding: 1%;
+}
+
+.profile-bio-update p{
+      margin: 2% 0 0 5%;
+}
+
+.profile-loc{
+      text-align: center;
+}
+.profile-loc .glbButton{
+      margin-top: 3%;
+}
+
+#accounts{
+      background: url(/static/img/space.jpg);
+      background-size: cover;
+      background-position: no-repeat;
+      height: 100vh;
+}
+
+#acc-bg{
+      padding: 5%;
+      margin-top: 10%;
+      text-align: center;
+      background: #fefefe;
+}
+
+.flash-msg{
+      padding: 3%;
+      border: 1px solid #ccc;
+      color: #ccc;
+      text-align: center;
+}
+
+.error-msg:hover{
+      text-decoration: none !important;
+}
+
+.success{
+      border-color:  #09EF88 !important;
+      color:  #09EF88 !important;
+}
+
+.danger{
+      border-color: #c0392b !important;
+      color: #e74c3c !important;
+}
+
+.flash-feed{
+      margin: 5% 40%;
+}
