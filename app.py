@@ -114,11 +114,17 @@ def add_user(userForename, userSurname, userEmail, userPassword):
             db.close()
             
       
-def start_sesh(userName):
-      #start the session
-      session['userName'] = userName
-      #redirect the user
-      return determine_user_path()
+      
+@app.route("/account") 
+def display_options_to_user():
+      #this function displays different options to the user based in whether or not they're logged in
+      if 'userName' in session:
+            #show a 'logout' and 'view profile'
+            return render_template("account.html")
+      
+      else:
+            #if not, show a log in form
+            return redirect(url_for("log_in"))
 
 
 @app.route("/login", methods=['POST', 'GET'])
@@ -136,9 +142,10 @@ def log_in():
                   return auth_user_login(userName, userPassword)
       else:
             #the user is accessing this via GET, which they probably shouldn't be able to do, so send 'em away
-            return 'NAH'
-      
+            return render_template("login.html")
 
+            
+      
       
 def auth_user_login(userName, userPassword):
       #check the user exists first
@@ -159,11 +166,20 @@ def auth_user_login(userName, userPassword):
             return start_sesh(userName)
       else:
             #the passwords dont match, so flash the user
-            print str(userActualPass) + str(check)
-            return 'incorrect password'
+            flash('Incorrect Email Or Password :(')
+            return redirect(url_for("log_in"))
       
       db.close()
 
+      
+def start_sesh(userName):
+      #start the session
+      session['userName'] = userName
+      #redirect the user
+      return determine_user_path()
+
+
+      
 @app.route("/logout")
 def close_sesh():
       #check if a user is actually in a session first
@@ -399,17 +415,6 @@ def update_user_bio():
       else:
             return not_today(403)
 
-@app.route("/account") 
-def display_options_to_user():
-      #this function displays different options to the user based in whether or not they're logged in
-      if 'userName' in session:
-            #show a 'logout' and 'view profile'
-            return render_template("account.html")
-      
-      else:
-            #if not, show a log in form
-            return render_template("login.html")
-      
 @app.route("/search/", methods=["POST", "GET"])
 def get_search_results():
       if request.method == "POST":
