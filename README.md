@@ -3,6 +3,4 @@ Coursework 2 for Adv Web Tech
 
 
 # To Run
-You'll need to install ImageMagick, a library used to handle the images uploaded to the server
-
-# add this bit in!
+enter 'python app.py' via terminal once you're in the src folder.
